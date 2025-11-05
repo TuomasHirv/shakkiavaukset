@@ -2,7 +2,7 @@
 Websovellus mihin käyttäjät voi lisätä shakkiavauksia ja kommentoida niihin.
 
 
-Sovelluksessa käyttäjät pystyvät jakamaan shakkiavauksia. Reseptissä lukee siirrot ja avauksen tavoite.
+Sovelluksessa käyttäjät pystyvät jakamaan shakkiavauksia. Avauksessa lukee siirrot ja avauksen tavoite.
 Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
 Käyttäjä pystyy lisäämään avauksia ja muokkaamaan ja poistamaan niitä.
 Käyttäjä näkee sovellukseen lisätyt avaukset.
