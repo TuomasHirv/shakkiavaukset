@@ -1,0 +1,19 @@
+[33mcommit 675c4e71def205a1a1aee8124140d6f10c2a3c6e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: TuomasHirv <117355280+TuomasHirv@users.noreply.github.com>
+Date:   Wed Nov 5 12:11:30 2025 +0200
+
+    Fix wording in README about chess openings
+
+[33mcommit 445f78a836850906e70c9035697dfb429b4bf122[m
+Author: TuomasHirv <117355280+TuomasHirv@users.noreply.github.com>
+Date:   Sun Nov 2 21:49:48 2025 +0200
+
+    Päivitetty README.md sovelluksen kuvauksella
+    
+    Lisätty tietoa sovelluksen ominaisuuksista ja käyttäjätoiminnoista.
+
+[33mcommit d1fe9b7c26896b0f3fd21a3642961d0b987f57e9[m
+Author: TuomasHirv <117355280+TuomasHirv@users.noreply.github.com>
+Date:   Sun Nov 2 21:46:03 2025 +0200
+
+    Initial commit
