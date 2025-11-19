@@ -15,6 +15,13 @@
     <a href="/logout">Kirjaudu ulos</a>
     <a href="/new_item">Uusi avaus</a>
   </p>
+<ul>
+  {% for avaus in lista %}
+    <li>{{ avaus["nimi"] }} - {{ avaus["kuvaus"] }} - {{ avaus["tykkaykset"] }} - {{avaus["move_1"]}} - {{avaus["move_2"]}}
+        <a href = "{{ url_for('opening_detail', opening_id=avaus['id']) }}"> VIEWER </a>
+    </li>
+  {% endfor %}
+</ul>
   {% else %}
   <form action="/login" method="post">
     <p>

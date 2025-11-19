@@ -1,0 +1,26 @@
+<h1>{{ avaus["nimi"] }}</h1>
+
+<p><strong>Description:</strong> {{ avaus["kuvaus"] }}</p>
+<p><strong>Likes:</strong> {{ avaus["tykkaykset"] }}</p>
+
+<hr>
+
+<h2>Moves</h2>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Move #</th>
+        <th>White</th>
+        <th>Black</th>
+    </tr>
+
+    {% for move in moves %}
+        <tr>
+            <td>{{ move["siirto_numero"] }}</td>
+            <td>{{ move["siirtoW"] }}</td>
+            <td>{{ move["siirtoM"] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<br>

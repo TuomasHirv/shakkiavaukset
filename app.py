@@ -3,15 +3,22 @@ from flask import render_template, request, session, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
+import re
+
 from myapp import db
 from myapp import config
 from myapp import siirrot_reader
+SAN_PATTERN = re.compile(
+    r'^(?:[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?)([+#]?)$'
+)
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 @app.route("/")
 def index():
-    return render_template("index.html")
+    avaukset = siirrot_reader.hae_avauksia(0, 9)
+    print(avaukset)
+    return render_template("index.html", lista = avaukset)
 
 @app.route("/register")
 def register():
@@ -58,7 +65,12 @@ def create_item():
     eco_code = request.form["eco_code"]
     kuvaus = request.form["kuvaus"]
     siirrot = request.form["siirrot"]
-
+    
+    tarkistus = siirrot.split()
+    for move in tarkistus:
+        move.strip()
+        if not SAN_PATTERN.match(move):
+            return f"<h1>Invalid chess move on line: {move}</h1> <a href='/new_item'> Back </a>"
     id = -1
     try:
         sql = "INSERT INTO avaukset (nimi, kuvaus, eco_code, tykkaykset, tekija) VALUES (?, ?, ?, ?, ?)"
@@ -72,7 +84,19 @@ def create_item():
         sql2 = "INSERT INTO moves (avaus_id, siirto_numero, color, siirto) VALUES (?, ?, ?, ?)"
         for siirto in lista:
             db.execute(sql2, [siirto["avaus_id"], siirto["siirto_numero"], siirto["color"], siirto["siirto"]])
-    return lista
+    return redirect("/new_item")
+
+@app.route("/opening/<int:opening_id>")
+def opening_detail(opening_id):
+    avaus = siirrot_reader.hae_avaus_id(opening_id)
+    #print(avaus)
+    moves = siirrot_reader.hae_siirrot_avauksesta(opening_id)
+    #print(moves)
+    return render_template(
+        "viewer.html",
+        avaus=avaus,
+        moves=moves
+    )
 
 
 
