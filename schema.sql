@@ -14,10 +14,12 @@ CREATE TABLE IF NOT EXISTS avaukset (
     kuvaus TEXT,
     eco_code Text,
     tykkaykset INTEGER,
+    tykkaajat_nimi Text,
     tekija TEXT
 );
 --Shakkiavauksien siirrot atomisoidaan toiseen taulukkoon nimeltä siirrot. 
 -- Niitä yhdistää avaukset.id ja siirrot.avausId
+DROP TABLE moves;
 CREATE TABLE moves (
     id INTEGER PRIMARY KEY,
     avaus_id INTEGER NOT NULL,

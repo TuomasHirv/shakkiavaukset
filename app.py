@@ -1,6 +1,7 @@
 from flask import Flask
-from flask import render_template, request, session, redirect
+from flask import render_template, request, session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
+import json
 import sqlite3
 
 import re
@@ -16,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 @app.route("/")
 def index():
-    avaukset = siirrot_reader.hae_avauksia(0, 9)
+    avaukset = siirrot_reader.hae_avauksia(0, 9, "id", "")
     print(avaukset)
     return render_template("index.html", lista = avaukset)
 
@@ -73,8 +74,8 @@ def create_item():
             return f"<h1>Invalid chess move on line: {move}</h1> <a href='/new_item'> Back </a>"
     id = -1
     try:
-        sql = "INSERT INTO avaukset (nimi, kuvaus, eco_code, tykkaykset, tekija) VALUES (?, ?, ?, ?, ?)"
-        db.execute(sql, [nimi, kuvaus, eco_code, 0, tekija])
+        sql = "INSERT INTO avaukset (nimi, kuvaus, eco_code, tykkaykset, tykkaajat_nimi, tekija) VALUES (?, ?, ?, ?, ?, ?)"
+        db.execute(sql, [nimi, kuvaus, eco_code, 0, "", tekija])
         id = db.last_insert_id()
     except sqlite3.IntegrityError:
         return "VIRHE: Jokin Meni pieleen"
@@ -89,17 +90,37 @@ def create_item():
 @app.route("/opening/<int:opening_id>")
 def opening_detail(opening_id):
     avaus = siirrot_reader.hae_avaus_id(opening_id)
+    käyttäjä = session.get("username")
+    tykätty = False
+    if käyttäjä in avaus["tykkaajat_nimi"]:
+        tykätty = True
+    
     #print(avaus)
     moves = siirrot_reader.hae_siirrot_avauksesta(opening_id)
     #print(moves)
     return render_template(
         "viewer.html",
         avaus=avaus,
-        moves=moves
+        moves=moves,
+        tykatty=tykätty
     )
-
-
-
+#En käyttänyt atomisoitua dataa tykkääjien listaan ehkä virhe mutta ei isojuttu
+@app.route("/opening/<int:opening_id>/tykkaa", methods=["POST"])
+def tykkaa(opening_id):
+    käyttäjä = session.get("username")
+    muokattava = siirrot_reader.hae_avaus_id(opening_id)
+    
+    teksti=muokattava["tykkaajat_nimi"]
+    lista = teksti.split()
+    if käyttäjä in lista:
+        lista.remove(käyttäjä)
+        m_tykkäykset = max(0, muokattava["tykkaykset"]-1)
+    else:
+        lista.append(käyttäjä)
+        m_tykkäykset = muokattava["tykkaykset"]+1
+    m_teksti = " ".join(lista)
+    siirrot_reader.tykkää(m_tykkäykset, m_teksti, opening_id)
+    return redirect(url_for("opening_detail", opening_id=opening_id))
 
 @app.route("/logout")
 def logout():

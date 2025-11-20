@@ -14,19 +14,22 @@ def teksti_listaksi(siirrot, id):
            vari = "white"
     return lista
 
-def hae_avauksia(alku = 0, loppu = 9, jarjestus = "id"):
+def hae_avauksia(alku = 0, loppu = 9, jarjestus = "id", haku = ""):
     sql = """SELECT a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, m.siirto AS move_1, m2.siirto AS move_2
         FROM avaukset AS a
         JOIN moves as m ON a.id = m.avaus_id AND m.siirto_numero = 1
         JOIN moves as m2 ON a.id = m2.avaus_id AND m2.siirto_numero = 2
-        ORDER BY a.tykkaykset, a.id 
+        WHERE a.nimi LIKE ?
+        ORDER BY a.tykkaykset, ? 
         LIMIT ? OFFSET ?"""
-    result = db.query(sql, [loppu, alku])
+    m_haku = "%"+haku+"%"
+    m_jarjestus = "a."+jarjestus
+    result = db.query(sql, [m_haku, m_jarjestus, loppu, alku])
     lista = [dict(r) for r in result]
     return lista
 
 def hae_avaus_id(id):
-    sql = """Select a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija
+    sql = """Select a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, a.tykkaajat_nimi
             FROM avaukset AS a
             Where a.id = ?"""
     result = db.query(sql, [id,])
@@ -59,3 +62,11 @@ def yhdistä_siirrot(list):
     if num == 2:
         rivi = dict(siirto_numero = siirtoNum, siirtoW = ekaSiirto, siirtoM = "Loss")
     return ret
+
+
+def tykkää(m_tykkäykset, m_tykkääjät, id):
+    sql = """UPDATE avaukset 
+            SET tykkaykset = ?, tykkaajat_nimi = ?
+            WHERE id = ?
+            """
+    db.execute(sql, [m_tykkäykset, m_tykkääjät, id])
