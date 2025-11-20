@@ -15,6 +15,20 @@
     <a href="/logout">Kirjaudu ulos</a>
     <a href="/new_item">Uusi avaus</a>
   </p>
+  <form action="/" method="get">
+    <input type="text" name="haku" value= "{{haku}}" placeholder="Hae nimellä">
+  <select name="jarjestys">
+      <option value="id" {% if jarjestys == "id" %}selected{% endif %}>Uusin</option>
+      <option value="tykkaykset" {% if jarjestys == "tykkaykset" %}selected{% endif %}>Tykkäykset</option>
+      <option value="tekija" {% if jarjestys == "tekija" %}selected{% endif %}>Tekijä</option>
+  </select>
+    <button type="submit">Hae</button>
+    <a href="/" style="margin-left: 10px;">
+    <button type="button">Poista haku</button>
+  </a>
+
+  </form>
+
 <ul>
   {% for avaus in lista %}
     <li>{{ avaus["nimi"] }} - {{ avaus["kuvaus"] }} - {{ avaus["tykkaykset"] }} - {{avaus["move_1"]}} - {{avaus["move_2"]}}

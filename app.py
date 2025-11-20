@@ -17,9 +17,11 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 @app.route("/")
 def index():
-    avaukset = siirrot_reader.hae_avauksia(0, 9, "id", "")
+    haku = request.args.get("haku", "")
+    järjestys = request.args.get("jarjestys", "id")
+    avaukset = siirrot_reader.hae_avauksia(0, 9, järjestys, haku)
     print(avaukset)
-    return render_template("index.html", lista = avaukset)
+    return render_template("index.html", lista = avaukset, jarjestys = järjestys, haku=haku)
 
 @app.route("/register")
 def register():

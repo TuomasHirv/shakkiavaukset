@@ -15,16 +15,18 @@ def teksti_listaksi(siirrot, id):
     return lista
 
 def hae_avauksia(alku = 0, loppu = 9, jarjestus = "id", haku = ""):
-    sql = """SELECT a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, m.siirto AS move_1, m2.siirto AS move_2
+    m_jarjestus = "a."+jarjestus
+    sql = f"""SELECT a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, m.siirto AS move_1, m2.siirto AS move_2
         FROM avaukset AS a
         JOIN moves as m ON a.id = m.avaus_id AND m.siirto_numero = 1
         JOIN moves as m2 ON a.id = m2.avaus_id AND m2.siirto_numero = 2
         WHERE a.nimi LIKE ?
-        ORDER BY a.tykkaykset, ? 
+        ORDER BY {m_jarjestus} DESC
         LIMIT ? OFFSET ?"""
     m_haku = "%"+haku+"%"
-    m_jarjestus = "a."+jarjestus
-    result = db.query(sql, [m_haku, m_jarjestus, loppu, alku])
+    
+
+    result = db.query(sql, [m_haku, loppu, alku])
     lista = [dict(r) for r in result]
     return lista
 
