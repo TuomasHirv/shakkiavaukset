@@ -143,8 +143,11 @@ def logout():
 @app.route("/user/<username>")
 def user_profile(username):
     avaukset = siirrot_reader.hae_kayttajan_avaukset(username)
-    total_likes = sum([o[4] for o in avaukset])
-    return render_template("user.html", username=username, avaukset=avaukset, total_likes=total_likes)
+    kommentit = siirrot_reader.hae_kayttajan_kommentit(username)
+    avaukset_likes = sum([a[4] for a in avaukset])
+    kommentit_likes = sum([k[3] for k in kommentit])
+    total = avaukset_likes+kommentit_likes
+    return render_template("user.html", username=username, avaukset=avaukset, total_likes=total, kommentit=kommentit)
 
 @app.route("/opening/<int:opening_id>/kommentti", methods=["POST"])
 def kommentti(opening_id):

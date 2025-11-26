@@ -33,5 +33,6 @@ CREATE TABLE IF NOT EXISTS kommentit (
     tekija TEXT NOT NULL,
     tykkaykset INTEGER DEFAULT 0,
     tykkaajat_nimi Text DEFAULT "",
+    avauksen_nimi TEXT DEFAULT "",
     FOREIGN KEY (avaus_id) REFERENCES avaukset(id)
 );

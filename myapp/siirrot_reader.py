@@ -85,9 +85,11 @@ def hae_kayttajan_avaukset(tunnus):
 
 
 def tee_kommentti(tekija, teksti, avaus_id):
-    sql = """INSERT INTO kommentit (avaus_id, teksti, tekija) 
-            VALUES (?, ?, ?)"""
-    db.execute(sql, [avaus_id, teksti, tekija])
+    avaus = hae_avaus_id(avaus_id)
+
+    sql = """INSERT INTO kommentit (avaus_id, teksti, tekija, avauksen_nimi) 
+            VALUES (?, ?, ?, ?)"""
+    db.execute(sql, [avaus_id, teksti, tekija, avaus[1]])
 
 def hae_kommentit(avaus_id):
     sql = """
@@ -113,3 +115,12 @@ def hae_kommentti_id(id):
         WHERE id = ?
     """
     return db.query(sql, [id,])[0]
+
+def hae_kayttajan_kommentit(tunnus):
+    sql = """
+        SELECT id, avaus_id, teksti, tykkaykset, avauksen_nimi
+        FROM kommentit
+        WHERE tekija = ?
+        ORDER BY tykkaykset DESC
+    """
+    return db.query(sql, [tunnus])
