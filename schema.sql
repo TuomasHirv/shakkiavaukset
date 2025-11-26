@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT
 );
 
-DROP TABLE avaukset;
 --Shakkiavaus tietokanta
 CREATE TABLE IF NOT EXISTS avaukset (
     id INTEGER PRIMARY KEY,
@@ -19,12 +18,20 @@ CREATE TABLE IF NOT EXISTS avaukset (
 );
 --Shakkiavauksien siirrot atomisoidaan toiseen taulukkoon nimeltä siirrot. 
 -- Niitä yhdistää avaukset.id ja siirrot.avausId
-DROP TABLE moves;
-CREATE TABLE moves (
+CREATE TABLE IF NOT EXISTS moves (
     id INTEGER PRIMARY KEY,
     avaus_id INTEGER NOT NULL,
     siirto_numero INTEGER NOT NULL,
     color TEXT CHECK (color IN ('white','black')),
     siirto TEXT NOT NULL,
+    FOREIGN KEY (avaus_id) REFERENCES avaukset(id)
+);
+CREATE TABLE IF NOT EXISTS kommentit (
+    id INTEGER PRIMARY KEY,
+    avaus_id INTEGER NOT NULL,
+    teksti TEXT NOT NULL,
+    tekija TEXT NOT NULL,
+    tykkaykset INTEGER DEFAULT 0,
+    tykkaajat_nimi Text DEFAULT "",
     FOREIGN KEY (avaus_id) REFERENCES avaukset(id)
 );

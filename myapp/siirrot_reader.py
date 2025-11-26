@@ -72,3 +72,44 @@ def tykkää(m_tykkäykset, m_tykkääjät, id):
             WHERE id = ?
             """
     db.execute(sql, [m_tykkäykset, m_tykkääjät, id])
+
+
+def hae_kayttajan_avaukset(tunnus):
+    sql = """
+        SELECT id, nimi, kuvaus, eco_code, tykkaykset
+        FROM avaukset
+        WHERE tekija = ?
+        ORDER BY tykkaykset DESC
+    """
+    return db.query(sql, [tunnus])
+
+
+def tee_kommentti(tekija, teksti, avaus_id):
+    sql = """INSERT INTO kommentit (avaus_id, teksti, tekija) 
+            VALUES (?, ?, ?)"""
+    db.execute(sql, [avaus_id, teksti, tekija])
+
+def hae_kommentit(avaus_id):
+    sql = """
+        SELECT id, tekija, teksti, tykkaykset, tykkaajat_nimi
+        FROM kommentit
+        WHERE avaus_id = ?
+        ORDER BY tykkaykset DESC
+    """
+    return db.query(sql, [avaus_id])
+
+def tykkää_kommenttia(id, tykkaykset, tykkaajat):
+    sql = """
+        UPDATE kommentit SET tykkaykset = ?, tykkaajat_nimi = ?
+        WHERE id = ?
+    """
+    db.execute(sql, [tykkaykset, tykkaajat, id])
+
+
+def hae_kommentti_id(id):
+    sql = """
+        SELECT id, tekija, teksti, tykkaykset, tykkaajat_nimi, avaus_id
+        FROM kommentit
+        WHERE id = ?
+    """
+    return db.query(sql, [id,])[0]

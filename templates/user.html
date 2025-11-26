@@ -1,0 +1,23 @@
+<h1>{{ username }}</h1>
+
+<p><strong>Tykkäykset:</strong> {{ total_likes }}</p>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>ECO</th>
+        <th>Description</th>
+        <th>Likes</th>
+        <th>View</th>
+    </tr>
+
+    {% for o in avaukset %}
+    <tr>
+        <td>{{ o[1] }}</td>
+        <td>{{ o[3] }}</td>
+        <td>{{ o[2] }}</td>
+        <td>{{ o[4] }}</td>
+        <td><a href="{{ url_for('opening_detail', opening_id=o[0]) }}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>

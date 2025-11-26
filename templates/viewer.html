@@ -1,5 +1,9 @@
 <h1>{{ avaus["nimi"] }}</h1>
-<p><strong>Tekijä: {{ avaus["tekija"] }}</strong> </p>
+<p><strong>Tekijä: 
+    <a href="{{ url_for('user_profile', username=avaus['tekija']) }}">
+    {{ avaus["tekija"] }}
+    </a>
+</strong> </p>
 
 <p><strong>Description:</strong> {{ avaus["kuvaus"] }}</p>
 <p><strong>Likes:</strong> {{ avaus["tykkaykset"] }}</p>
@@ -32,3 +36,35 @@
 </form>
 
 <br>
+<h2>Kommentit</h2>
+
+{% if session.username %}
+<form action="{{ url_for('kommentti', opening_id=avaus['id']) }}" method="post">
+    <textarea name="sisalto" rows="3" cols="60"></textarea><br>
+    <button type="submit">Lähetä</button>
+</form>
+{% else %}
+<p>Kirjaudu kommentoidaksesi.</p>
+{% endif %}
+
+<br>
+
+{% for k in kommentit %}
+<div style="border:1px solid #aaa; padding:10px; margin-bottom:10px;">
+    <p><strong>
+        <a href="{{ url_for('user_profile', username=avaus['tekija']) }}">
+            {{ k[1] }}
+        </a>
+    </strong></p>
+    <p>{{ k[2] }}</p>
+    <form action="{{ url_for('tykkaa_kommentista', id=k[0]) }}" method="post">
+        {% if tykatyt[k[0]] %}
+        <button type="submit">Poista tykkäys</button>
+        {% else %}
+        <button type="submit">Tykkää</button>
+        {% endif %}
+        {{ k[3] }} likes
+    </form>
+</div>
+{% endfor %}
+

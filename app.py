@@ -100,11 +100,22 @@ def opening_detail(opening_id):
     #print(avaus)
     moves = siirrot_reader.hae_siirrot_avauksesta(opening_id)
     #print(moves)
+    kommentit = siirrot_reader.hae_kommentit(opening_id)
+    tykatyt_kommentit = {}
+    for kommentti in kommentit:
+        lista = kommentti[4].split()
+        if käyttäjä in lista:
+            tykatyt_kommentit[kommentti[0]] = True
+        else:
+            tykatyt_kommentit[kommentti[0]] = False
+
     return render_template(
         "viewer.html",
         avaus=avaus,
         moves=moves,
-        tykatty=tykätty
+        tykatty=tykätty,
+        kommentit=kommentit,
+        tykatyt=tykatyt_kommentit
     )
 #En käyttänyt atomisoitua dataa tykkääjien listaan ehkä virhe mutta ei isojuttu
 @app.route("/opening/<int:opening_id>/tykkaa", methods=["POST"])
@@ -129,3 +140,40 @@ def logout():
     del session["username"]
     return redirect("/")
 
+@app.route("/user/<username>")
+def user_profile(username):
+    avaukset = siirrot_reader.hae_kayttajan_avaukset(username)
+    total_likes = sum([o[4] for o in avaukset])
+    return render_template("user.html", username=username, avaukset=avaukset, total_likes=total_likes)
+
+@app.route("/opening/<int:opening_id>/kommentti", methods=["POST"])
+def kommentti(opening_id):
+    user = session.get("username")
+    if not user:
+        return "Kirjaudu kommentoidaksesi"
+
+    sisalto = request.form["sisalto"].strip()
+    if not sisalto:
+        return "Lisää sisältö"
+
+    siirrot_reader.tee_kommentti(user, sisalto, opening_id)
+    return redirect(url_for("opening_detail", opening_id=opening_id))
+
+
+@app.route("/kommentti/<int:id>/tykkaa_kommentista", methods=["POST"])
+def tykkaa_kommentista(id):
+    käyttäjä = session.get("username")
+    muokattava = siirrot_reader.hae_kommentti_id(id)
+    print(muokattava)
+    teksti=muokattava["tykkaajat_nimi"]
+    lista = teksti.split()
+    if käyttäjä in lista:
+        lista.remove(käyttäjä)
+        m_tykkäykset = max(0, muokattava["tykkaykset"]-1)
+    else:
+        lista.append(käyttäjä)
+        m_tykkäykset = muokattava["tykkaykset"]+1
+    m_teksti = " ".join(lista)
+    siirrot_reader.tykkää_kommenttia(id, m_tykkäykset, m_teksti)
+
+    return redirect(url_for("opening_detail", opening_id=muokattava[5]))
