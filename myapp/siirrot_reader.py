@@ -129,3 +129,14 @@ def hae_kayttajan_kommentit(tunnus):
         ORDER BY tykkaykset DESC
     """
     return db.query(sql, [tunnus])
+
+
+def delete_op(id):
+    sql = """DELETE FROM moves WHERE avaus_id = ?"""
+    db.execute(sql, [id])
+    sql2 = """DELETE FROM avaukset WHERE id = ?"""
+    db.execute(sql2, [id])
+
+def delete_co(id):
+    sql = """DELETE FROM kommentit WHERE id = ?"""
+    db.execute(sql, [id])

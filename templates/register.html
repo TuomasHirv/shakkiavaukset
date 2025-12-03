@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color: red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <head>
+  <meta charset="UTF-8">
   <title>Rekisteröinti</title>
 </head>
-
 <body>
-  <form action="/create" method="post">
+  <form id="registerForm" action="/create" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
     <p>
       Tunnus: <br />
-      <input type="text" name="username" />
+      <input type="text" name="username" id="username" required maxlength="30" minlength="5"
+      oninvalid="this.setCustomValidity('Must have atleast 5 letters')"
+      oninput="this.setCustomValidity('')"/>
     </p>
+
     <p>
       Salasana: <br />
-      <input type="password" name="password1" />
+      <input type="password" name="password1" id="password1" required maxlength="50" minlength="6"
+      oninvalid="this.setCustomValidity('Must have atleast 6 letters')"
+      oninput="this.setCustomValidity('')"/>
     </p>
+
     <p>
       Salasana uudestaan: <br />
-      <input type="password" name="password2" />
+      <input type="password" name="password2" id="password2" required maxlength="50" minlength="6"
+      oninvalid="this.setCustomValidity('Must have atleast 6 letters')"
+      oninput="this.setCustomValidity('')"/>
     </p>
+
     <input type="submit" value="Luo tunnus" />
   </form>
 </body>
-
 </html>

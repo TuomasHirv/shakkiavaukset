@@ -1,31 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <head>
   <title>Uusi avaus</title>
 </head>
-
 <body>
-  <form action="/create_item" method="post">
+  <form id="openingForm" action="/create_item" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
     <p>
       Nimi: <br />
-      <input type="text" name="nimi" />
+      <input type="text" name="nimi" id="nimi" required maxlength="30"
+             oninvalid="this.setCustomValidity('Name must be between 5 and 30 letters')"
+             oninput="this.setCustomValidity('')"/>
     </p>
+
     <p>
       Eco code: <br />
       <input type="text" name="eco_code" />
     </p>
+
     <p>
       Kuvaus: <br />
-      <input type="text" name="kuvaus" />
+      <input type="text" name="kuvaus" id="kuvaus" required maxlength="60"
+             oninvalid="this.setCustomValidity('Description must be between 5 and 60 letters')"
+             oninput="this.setCustomValidity('')"/>
     </p>
+
     <p>
       Siirrot: <br />
-      <textarea name="siirrot"  rows = "20" cols="6"></textarea>
+      <textarea name="siirrot" id="siirrot" rows="20" cols="6" required maxlength="60"
+                oninvalid="this.setCustomValidity('Enter the moves of the opening. Between 6 and 60 letters')"
+                oninput="this.setCustomValidity('')"></textarea>
     </p>
+
     <input type="submit" value="Luo avaus" />
   </form>
-</body>
 
+  <script>
+  document.getElementById("openingForm").addEventListener("submit", function(e) {
+    function countLetters(str) {
+      const lettersOnly = str.match(/[A-Za-z]/g);
+      return lettersOnly ? lettersOnly.length : 0;
+    }
+    function countLettersAndNumbers(str) {
+      const lettersAndNumbers = str.match(/[A-Za-z0-9]/g);
+      return lettersAndNumbers ? lettersAndNumbers.length : 0;
+    }    
+
+    const nimi = document.getElementById("nimi").value;
+    const kuvaus = document.getElementById("kuvaus").value;
+    const siirrot = document.getElementById("siirrot").value;
+
+    let errors = [];
+
+    const nimiLetters = countLetters(nimi);
+    if (nimiLetters < 5 || nimiLetters > 30) {
+      errors.push("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).");
+    }
+
+    const kuvausLetters = countLetters(kuvaus);
+    if (kuvausLetters < 5 || kuvausLetters > 60) {
+      errors.push("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).");
+    }
+
+    const siirrotLetters = countLettersAndNumbers(siirrot);
+    if (siirrotLetters < 6 || siirrotLetters > 60) {
+      errors.push("Moves must be between 6 and 60 letters (spaces ignored).");
+    }
+
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      e.preventDefault();
+    }
+  });
+  </script>
+
+</body>
 </html>

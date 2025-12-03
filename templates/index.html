@@ -5,6 +5,15 @@
 <head>
   <title>Kirjautuminen</title>
 </head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <body>
   {% if session.username %}
@@ -41,6 +50,7 @@
 </ul>
   {% else %}
   <form action="/login" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <p>
       Tunnus: <br />
       <input type="text" name="username" />

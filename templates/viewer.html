@@ -4,6 +4,15 @@
     {{ avaus["tekija"] }}
     </a>
 </strong> </p>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <p><strong>Description:</strong> {{ avaus["kuvaus"] }}</p>
 <p><strong>Likes:</strong> {{ avaus["tykkaykset"] }}</p>
@@ -28,6 +37,7 @@
     {% endfor %}
 </table>
 <form action="{{ url_for('tykkaa', opening_id=avaus['id']) }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     {% if tykatty %}
         <button type="submit">Poista tykkäys</button>
     {% else %}
@@ -40,9 +50,19 @@
 
 {% if session.username %}
 <form action="{{ url_for('kommentti', opening_id=avaus['id']) }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <textarea name="sisalto" rows="3" cols="60"></textarea><br>
     <button type="submit">Lähetä</button>
 </form>
+{% if session.username == avaus['tekija'] %}
+<form action="{{ url_for('delete_opening', opening_id=avaus['id']) }}" method="post" style="margin-top:10px;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" onclick="return confirm('Haluatko varmasti poistaa tämän avauksen?')">
+        Poista avaus
+    </button>
+</form>
+{% endif %}
+
 {% else %}
 <p>Kirjaudu kommentoidaksesi.</p>
 {% endif %}
@@ -58,6 +78,7 @@
     </strong></p>
     <p>{{ k[2] }}</p>
     <form action="{{ url_for('tykkaa_kommentista', id=k[0]) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         {% if tykatyt[k[0]] %}
         <button type="submit">Poista tykkäys</button>
         {% else %}
@@ -65,6 +86,15 @@
         {% endif %}
         {{ k[3] }} likes
     </form>
+    {% if session.username == k[1] %}
+    <form action="{{ url_for('delete_comment', comment_id=k[0]) }}" method="post" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" onclick="return confirm('Haluatko varmasti poistaa tämän kommentin?')">
+            Poista kommentti
+        </button>
+    </form>
+    {% endif %}
+
 </div>
 {% endfor %}
 
