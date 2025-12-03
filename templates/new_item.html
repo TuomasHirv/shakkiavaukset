@@ -9,7 +9,9 @@
     </ul>
   {% endif %}
 {% endwith %}
-
+<form action="{{ url_for('index') }}" method="get" style="display:inline;">
+    <button type="submit">Home</button>
+</form>
 <head>
   <title>Uusi avaus</title>
 </head>
@@ -46,44 +48,6 @@
     <input type="submit" value="Luo avaus" />
   </form>
 
-  <script>
-  document.getElementById("openingForm").addEventListener("submit", function(e) {
-    function countLetters(str) {
-      const lettersOnly = str.match(/[A-Za-z]/g);
-      return lettersOnly ? lettersOnly.length : 0;
-    }
-    function countLettersAndNumbers(str) {
-      const lettersAndNumbers = str.match(/[A-Za-z0-9]/g);
-      return lettersAndNumbers ? lettersAndNumbers.length : 0;
-    }    
-
-    const nimi = document.getElementById("nimi").value;
-    const kuvaus = document.getElementById("kuvaus").value;
-    const siirrot = document.getElementById("siirrot").value;
-
-    let errors = [];
-
-    const nimiLetters = countLetters(nimi);
-    if (nimiLetters < 5 || nimiLetters > 30) {
-      errors.push("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).");
-    }
-
-    const kuvausLetters = countLetters(kuvaus);
-    if (kuvausLetters < 5 || kuvausLetters > 60) {
-      errors.push("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).");
-    }
-
-    const siirrotLetters = countLettersAndNumbers(siirrot);
-    if (siirrotLetters < 6 || siirrotLetters > 60) {
-      errors.push("Moves must be between 6 and 60 letters (spaces ignored).");
-    }
-
-    if (errors.length > 0) {
-      alert(errors.join("\n"));
-      e.preventDefault();
-    }
-  });
-  </script>
 
 </body>
 </html>

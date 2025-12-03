@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+</head>
+<form action="{{ url_for('index') }}" method="get" style="display:inline;">
+    <button type="submit">Home</button>
+</form>
+
+<body>
+    <h1>Leaderboard</h1>
+
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>User</th>
+            <th>Total Likes</th>
+            <th>Most Liked Opening</th>
+            <th>Most Liked Comment</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+            <td><a href="{{ url_for('user_profile', username=user.id) }}">{{ user.name }}</a></td>
+            <td>{{ user.Total_likes }}</td>
+            <td>
+                {% if user.opening != "none" %}
+                    <a href="{{ url_for('opening_detail', opening_id=user.opening_id) }}">
+                        {{ user.opening }}
+                    </a>
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            <td>
+                {% if user.comment != "none" %}
+                    <a href="{{ url_for('opening_detail', opening_id=user.comment_opening_id) }}">
+                        {{ user.comment }}
+                    </a>
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -247,3 +247,11 @@ def delete_comment(comment_id):
     flash("Comment deleted successfully.")
     return redirect(request.referrer or url_for("index"))
 
+@app.route("/leaderboard")
+def leaderboard():
+    users_stats = siirrot_reader.leader_board_info()
+
+    # Sort users by Total_likes descending
+    sorted_users = sorted(users_stats.values(), key=lambda x: x["Total_likes"], reverse=True)
+
+    return render_template("leaderboard.html", users=sorted_users)

@@ -140,3 +140,37 @@ def delete_op(id):
 def delete_co(id):
     sql = """DELETE FROM kommentit WHERE id = ?"""
     db.execute(sql, [id])
+
+
+def leader_board_info():
+    sql = """SELECT username, id 
+            FROM users"""
+    users = db.query(sql)
+    all_users_stats={}
+    likes = 0
+    for u in users:
+        openings = hae_kayttajan_avaukset(u[0])
+        comments = hae_kayttajan_kommentit(u[0])
+        if openings:
+            most_liked_opening = openings[0]["nimi"]
+            most_liked_opening_id = openings[0]["id"]
+        else:
+            most_liked_opening = "none"
+            most_liked_opening_id = -1
+        if comments:
+            most_liked_comment = comments[0]["teksti"]
+            most_liked_comment_opening_id = comments[0]["avaus_id"]
+        else:
+            most_liked_comment = "none"
+            most_liked_comment_opening_id = -1
+        likes = sum(o[4]for o in openings) + sum([c[3] for c in comments])
+        all_users_stats[u[0]] = {
+            "id": u[1],
+            "name": u[0],
+            "opening": most_liked_opening,
+            "opening_id": most_liked_opening_id,
+            "comment": most_liked_comment,
+            "comment_opening_id": most_liked_comment_opening_id,
+            "Total_likes":likes
+        }
+    return all_users_stats
