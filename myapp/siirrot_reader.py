@@ -15,6 +15,11 @@ def teksti_listaksi(siirrot, id):
     return lista
 
 def hae_avauksia(alku = 0, loppu = 9, jarjestus = "id", haku = ""):
+    #Tässä kannattaa huomioda, että ORDER BY osiota ei voi parametrisoida. Joten olen päättänyt whitelistata osan syötteistä.
+    #Tällä tavoin estän SQL injektion koodiin.
+    whitelist = ["id", "tykkaykset", "tekija"]
+    if jarjestus not in whitelist:
+        jarjestus = "id"
     m_jarjestus = "a."+jarjestus
     sql = f"""SELECT a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, m.siirto AS move_1, m2.siirto AS move_2
         FROM avaukset AS a
