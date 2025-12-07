@@ -1,5 +1,8 @@
 <!DOCTYPE html>
+{% extends "base.html" %}
 <html lang="en">
+{% block content %}
+
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul style="color: red;">
@@ -9,7 +12,6 @@
     </ul>
   {% endif %}
 {% endwith %}
-
 <head>
   <meta charset="UTF-8">
   <title>Rekisteröinti</title>
@@ -43,3 +45,4 @@
   </form>
 </body>
 </html>
+{% endblock %}

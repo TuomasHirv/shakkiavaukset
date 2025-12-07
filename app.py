@@ -6,9 +6,7 @@ import sqlite3
 from flask_wtf.csrf import CSRFProtect
 import re
 
-from myapp import db
-from myapp import config
-from myapp import siirrot_reader
+from myapp import db, config, siirrot_reader, text_validation
 SAN_PATTERN = re.compile(
     r'^(?:[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?)([+#]?)$'
 )
@@ -34,21 +32,14 @@ def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
-
-    username_letters = len(re.findall(r"[A-Za-z]", username))
-    password_length = len(password1.replace(" ", ""))
-    errors = []
-    if username_letters < 5:
-        errors.append("Username must contain 5 letters")
-    if password_length < 6:
-        errors.append("Password must have atleast 6 symbols")
-    if password1 != password2:
-        errors.append("Passwords dont match")
+    #Checking if the text is valid
+    errors = text_validation.validate_username_and_password(username, password1, password2)
     if errors:
         flash("\n".join(errors))
         return redirect(request.referrer)
-    password_hash = generate_password_hash(password1)
+    
 
+    password_hash = generate_password_hash(password1)
     try:
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
@@ -82,24 +73,8 @@ def create_item():
     eco_code = request.form["eco_code"]
     description = request.form["kuvaus"]
     moves = request.form["siirrot"]
-    
-    errors = []
-    name_letters = len(re.findall(r"[A-Za-z]", name))
-    if name_letters < 5 or name_letters > 30:
-        errors.append("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).")
-
-    description_letters = len(re.findall(r"[A-Za-z]", description))
-    if description_letters < 5 or description_letters > 60:
-        errors.append("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).")
-
-    moves_count = len(re.findall(r"[A-Za-z0-9]", moves))
-    if moves_count < 6 or moves_count > 60:
-        errors.append("Moves must be between 6 and 60 letters/numbers (spaces and symbols ignored).")
-    check = moves.split()
-    for move in check:
-        move = move.strip()
-        if not SAN_PATTERN.match(move):
-            errors.append(f"Invalid chess move: {move}")
+    #Checking if the text is valid
+    errors = text_validation.validate_new_opening(name,description,moves)
     if errors:
         for err in errors:
             flash(err)
@@ -184,13 +159,20 @@ def user_profile(username):
 @app.route("/opening/<int:opening_id>/kommentti", methods=["POST"])
 def kommentti(opening_id):
     user = session.get("username")
+    errors = []
     if not user:
-        return "Kirjaudu kommentoidaksesi"
+        errors.append("You arent logged in")
+        
 
     text = request.form["sisalto"].strip()
     if not text:
-        return "Lisää sisältö"
-
+        errors.append("Add content to the comment")
+        
+    if errors:
+        for error in errors:
+            flash(error)
+        redirect(request.referrer)
+    
     siirrot_reader.create_comment(user, text, opening_id)
     return redirect(url_for("opening_detail", opening_id=opening_id))
 
@@ -215,7 +197,22 @@ def tykkaa_kommentista(id):
 
 @app.route("/comment/<int:id>/update", methods=["POST"])
 def update_comment_route(id):
+    comment = siirrot_reader.query_by_comment_id(id)
+    if not comment:
+        flash("Comment not found")
+        return redirect(url_for("index"))
+    creator = comment[1]
+    if session.get("username") != creator:
+        flash("You are not allowed to delete this comment.")
+        return redirect(request.referrer or url_for("index"))
+
     new_text = request.form["new_text"]
+
+    text = new_text.strip()
+    if not text:
+        flash("Add content to the comment")
+        redirect(request.referrer)
+
     siirrot_reader.update_comment(id, new_text)   # your existing function
     opening_id = request.form["opening_id"]
     return redirect(url_for("opening_detail", opening_id=opening_id))
@@ -271,31 +268,24 @@ def edit_opening(opening_id):
 
 @app.route("/edit_opening/<int:opening_id>", methods=["POST"])
 def save_opening_edit(opening_id):
-    errors = []
+    opening = siirrot_reader.get_opening_id(opening_id)
+    user = session.get("username")
+    if opening[4] != user:
+        flash("You arent allowed to change that opening")
+        redirect(request.referrer)
+    
     title = request.form["nimi"]
     description = request.form["kuvaus"]
     eco_code = request.form["eco_code"]
     id = opening_id
-
-    name_letters = len(re.findall(r"[A-Za-z]", title))
-    if name_letters < 5 or name_letters > 30:
-        errors.append("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).")
-
-    description_letters = len(re.findall(r"[A-Za-z]", description))
-    if description_letters < 5 or description_letters > 60:
-        errors.append("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).")
-
     move_updates = []
     for key, value in request.form.items():
         if key.startswith("siirto_"):
             move_id = int(key.split("_")[1])
             move_text = value.strip()
-            if not SAN_PATTERN.match(move_text):
-                errors.append(f"Invalid chess move: {move_text}")
-            else :
-                move_updates.append((move_id, move_text))
-    if len(move_updates)< 6:
-        errors.append("Moves must be between 6 and 60 letters/numbers (spaces and symbols ignored).")
+            move_updates.append((move_id, move_text))
+    
+    errors = text_validation.validate_opening_edit(title, description, move_updates)
     if errors:
         for err in errors:
             flash(err)

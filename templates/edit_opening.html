@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+
 <h2>Edit Opening: {{ opening["nimi"] }}</h2>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -37,3 +40,4 @@
 {% else %}
     <strong style="color:red;">You can't edit this opening</strong>
 {% endif %}
+{% endblock %}
