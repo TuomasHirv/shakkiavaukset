@@ -118,6 +118,13 @@ def query_by_comment_id(id):
     """
     return db.query(sql, [id,])[0]
 
+def update_comment(id, new_text):
+    sql = """UPDATE kommentit 
+            SET teksti = ?, tykkaykset = 0, tykkaajat_nimi = ''
+            where id = ?"""
+    db.execute(sql, [new_text, id])
+
+
 def query_users_comments(username):
     sql = """
         SELECT id, avaus_id, teksti, tykkaykset, avauksen_nimi

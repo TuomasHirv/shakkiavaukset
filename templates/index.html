@@ -23,9 +23,9 @@
   <form action="/" method="get">
     <input type="text" name="query" value= "{{query}}" placeholder="search with the name of the opening">
   <select name="order">
-      <option value="id" {% if order == "id" %}selected{% endif %}>Newest</option>
-      <option value="tykkaykset" {% if order == "tykkaykset" %}selected{% endif %}>Likes</option>
-      <option value="tekija" {% if order == "tekija" %}selected{% endif %}>Creator</option>
+      <option value="id" {% if jarjestys == "id" %}selected{% endif %}>Newest</option>
+      <option value="tykkaykset" {% if jarjestys == "tykkaykset" %}selected{% endif %}>Likes</option>
+      <option value="tekija" {% if jarjestys == "tekija" %}selected{% endif %}>Creator</option>
   </select>
     <button type="submit">Search</button>
     <a href="/" style="margin-left: 10px;">

@@ -213,6 +213,12 @@ def tykkaa_kommentista(id):
 
     return redirect(url_for("opening_detail", opening_id=target[5]))
 
+@app.route("/comment/<int:id>/update", methods=["POST"])
+def update_comment_route(id):
+    new_text = request.form["new_text"]
+    siirrot_reader.update_comment(id, new_text)   # your existing function
+    opening_id = request.form["opening_id"]
+    return redirect(url_for("opening_detail", opening_id=opening_id))
 
 @app.route("/delete_opening/<int:opening_id>", methods=["POST"])
 def delete_opening(opening_id):

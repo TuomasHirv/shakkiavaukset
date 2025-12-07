@@ -78,8 +78,24 @@
         <a href="{{ url_for('user_profile', username=avaus['tekija']) }}">
             {{ k[1] }}
         </a>
-    </strong></p>
+    </strong></p>    
+    {% if request.args.get('edit') == k[0]|string %}
+        {% if session.username == k[1] %}
+        <strong style="color:red;">Warning: editing comments removes likes</strong>
+        <form action="{{ url_for('update_comment_route', id=k[0]) }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="opening_id" value="{{ avaus['id'] }}">
+            
+            <textarea name="new_text" style="width:100%;height:80px;">{{ k[2] }}</textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+        {% else %}
+            <p> You aren't allowed to change this comment</p>
+        {% endif %}
+    {% else %}
     <p>{{ k[2] }}</p>
+    {% endif %}
     <form action="{{ url_for('tykkaa_kommentista', id=k[0]) }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         {% if tykatyt[k[0]] %}
@@ -92,6 +108,15 @@
     {% if session.username == k[1] %}
     <form action="{{ url_for('delete_comment', comment_id=k[0]) }}" method="post" style="display:inline;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if request.args.get('edit') == k[0]|string %}
+            <a href="{{ url_for('opening_detail', opening_id=avaus['id']) }}">
+                <button type="button">Cancel</button>
+            </a>
+        {% else %}
+            <a href="?edit={{ k[0] }}">
+                <button type="button">Edit</button>
+            </a>
+        {% endif %}
         <button type="submit" onclick="return confirm('Haluatko varmasti poistaa tämän kommentin?')">
             Poista kommentti
         </button>
