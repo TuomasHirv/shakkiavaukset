@@ -261,3 +261,45 @@ def leaderboard():
     sorted_users = sorted(users_stats.values(), key=lambda x: x["Total_likes"], reverse=True)
 
     return render_template("leaderboard.html", users=sorted_users)
+
+@app.route("/edit_opening/<int:opening_id>")
+def edit_opening(opening_id):
+    info = siirrot_reader.opening_edit_helper(opening_id)
+    opening_info = info[0]
+    moves_info = info[1]
+    return render_template("edit_opening.html", opening=opening_info, moves=moves_info, opening_id=opening_id)
+
+@app.route("/edit_opening/<int:opening_id>", methods=["POST"])
+def save_opening_edit(opening_id):
+    errors = []
+    title = request.form["nimi"]
+    description = request.form["kuvaus"]
+    eco_code = request.form["eco_code"]
+    id = opening_id
+
+    name_letters = len(re.findall(r"[A-Za-z]", title))
+    if name_letters < 5 or name_letters > 30:
+        errors.append("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).")
+
+    description_letters = len(re.findall(r"[A-Za-z]", description))
+    if description_letters < 5 or description_letters > 60:
+        errors.append("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).")
+
+    move_updates = []
+    for key, value in request.form.items():
+        if key.startswith("siirto_"):
+            move_id = int(key.split("_")[1])
+            move_text = value.strip()
+            if not SAN_PATTERN.match(move_text):
+                errors.append(f"Invalid chess move: {move_text}")
+            else :
+                move_updates.append((move_id, move_text))
+    if len(move_updates)< 6:
+        errors.append("Moves must be between 6 and 60 letters/numbers (spaces and symbols ignored).")
+    if errors:
+        for err in errors:
+            flash(err)
+        return redirect(request.referrer or url_for("index"))
+    siirrot_reader.change_opening_info(title,description,eco_code,id)
+    siirrot_reader.change_moves(move_updates)
+    return redirect(url_for("opening_detail", opening_id=opening_id))

@@ -1,0 +1,39 @@
+<h2>Edit Opening: {{ opening["nimi"] }}</h2>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% if session.username == opening["tekija"] %}
+    <form action="{{ url_for('save_opening_edit', opening_id=opening_id) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Name:</label>
+        <input type="text" name="nimi" value="{{ opening['nimi'] }}" size="30"><br><br>
+
+        <label>Description:</label><br>
+        <textarea name="kuvaus" rows="4" cols="60">{{ opening['kuvaus'] }}</textarea><br><br>
+
+        <label>ECO Code:</label>
+        <input type="text" name="eco_code" value="{{ opening['eco_code'] }}"><br><br>
+
+        <h3>Moves:</h3>
+
+        {% for m in moves %}
+            <label>Move {{ m["siirto_numero"] }} ({{ m["color"] }})</label>
+
+            <input type="hidden" name="move_id_{{ m['id'] }}" value="{{ m['id'] }}">
+
+            <input type="text" name="siirto_{{ m['id'] }}" value="{{ m['siirto'] }}" size="20">
+            <br><br>
+        {% endfor %}
+
+        <button type="submit">Save changes</button>
+
+</form>
+{% else %}
+    <strong style="color:red;">You can't edit this opening</strong>
+{% endif %}

@@ -1,4 +1,5 @@
 --Käyttäjä tietokanta:
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS moves (
     siirto_numero INTEGER NOT NULL,
     color TEXT CHECK (color IN ('white','black')),
     siirto TEXT NOT NULL,
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id)
+    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS kommentit (
     id INTEGER PRIMARY KEY,
@@ -34,5 +35,32 @@ CREATE TABLE IF NOT EXISTS kommentit (
     tykkaykset INTEGER DEFAULT 0,
     tykkaajat_nimi Text DEFAULT "",
     avauksen_nimi TEXT DEFAULT "",
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id)
+    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
 );
+CREATE TABLE moves_new (
+    id INTEGER PRIMARY KEY,
+    avaus_id INTEGER NOT NULL,
+    siirto_numero INTEGER NOT NULL,
+    color TEXT CHECK (color IN ('white','black')),
+    siirto TEXT NOT NULL,
+    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
+);
+
+INSERT INTO moves_new SELECT * FROM moves;
+
+DROP TABLE moves;
+
+ALTER TABLE moves_new RENAME TO moves;
+
+CREATE TABLE IF NOT EXISTS kommentit_new (
+    id INTEGER PRIMARY KEY,
+    avaus_id INTEGER NOT NULL,
+    teksti TEXT NOT NULL,
+    tekija TEXT NOT NULL,
+    tykkaykset INTEGER DEFAULT 0,
+    tykkaajat_nimi Text DEFAULT "",
+    avauksen_nimi TEXT DEFAULT "",
+    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
+);
+
+DROP TABLE kommentit_new;

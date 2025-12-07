@@ -136,10 +136,8 @@ def query_users_comments(username):
 
 
 def delete_op(id):
-    sql = """DELETE FROM moves WHERE avaus_id = ?"""
+    sql = """DELETE FROM avaukset WHERE id = ?"""
     db.execute(sql, [id])
-    sql2 = """DELETE FROM avaukset WHERE id = ?"""
-    db.execute(sql2, [id])
 
 def delete_co(id):
     sql = """DELETE FROM kommentit WHERE id = ?"""
@@ -178,3 +176,31 @@ def leader_board_info():
             "Total_likes":likes
         }
     return all_users_stats
+
+
+def opening_edit_helper(opening_id):
+    sql = """SELECT nimi, kuvaus, eco_code, tekija
+            FROM avaukset 
+            WHERE id = ?;"""
+    opening_info = db.query(sql, [opening_id])[0]
+
+    sql2 = """SELECT siirto, siirto_numero, id, color
+                FROM moves
+                WHERE avaus_id = ?;"""
+    move_info = db.query(sql2, [opening_id])
+    return (opening_info, move_info)
+
+def change_moves(move_id_new_text):
+    sql = """UPDATE moves 
+            SET siirto = ?
+            WHERE id = ?;"""
+    for move in move_id_new_text:
+        text = move[0]
+        id = move[1]
+        db.execute(sql, [text, id])
+
+def change_opening_info(title, description, ecocode, id):
+    sql = """UPDATE avaukset 
+        SET nimi = ?, kuvaus = ?, eco_code = ?
+        WHERE id = ?;"""
+    db.execute(sql, [title, description, ecocode, id])
