@@ -1,119 +1,116 @@
 from myapp import db
-def teksti_listaksi(siirrot, id):
-    lista = []
-    siirto_lista = siirrot.split()
+def tekst_to_list(moves, id):
+    all = []
+    moves_list = moves.split()
     i = 1
-    vari = "white"
-    for osa in siirto_lista:
-        rivi = dict(avaus_id=id, siirto_numero =i, color = vari, siirto = osa)
-        lista.append(rivi)
+    side = "white"
+    for osa in moves_list:
+        line = dict(avaus_id=id, siirto_numero =i, color = side, siirto = osa)
+        all.append(line)
         i+=1
-        if (vari == "white"):
-            vari = "black"
+        if (side == "white"):
+            side = "black"
         else:
-           vari = "white"
-    return lista
+           side = "white"
+    return all
 
-def hae_avauksia(alku = 0, loppu = 9, jarjestus = "id", haku = ""):
+def get_openings(beginning = 0, end = 9, order = "id", query = ""):
     #Tässä kannattaa huomioda, että ORDER BY osiota ei voi parametrisoida. Joten olen päättänyt whitelistata osan syötteistä.
     #Tällä tavoin estän SQL injektion koodiin.
     whitelist = ["id", "tykkaykset", "tekija"]
-    if jarjestus not in whitelist:
-        jarjestus = "id"
-    m_jarjestus = "a."+jarjestus
+    if order not in whitelist:
+        order = "id"
+    m_order = "a."+order
+
     sql = f"""SELECT a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, m.siirto AS move_1, m2.siirto AS move_2
         FROM avaukset AS a
         JOIN moves as m ON a.id = m.avaus_id AND m.siirto_numero = 1
         JOIN moves as m2 ON a.id = m2.avaus_id AND m2.siirto_numero = 2
         WHERE a.nimi LIKE ?
-        ORDER BY {m_jarjestus} DESC
+        ORDER BY {m_order} DESC
         LIMIT ? OFFSET ?"""
-    m_haku = "%"+haku+"%"
-    
+    m_query = "%"+query+"%"
 
-    result = db.query(sql, [m_haku, loppu, alku])
-    lista = [dict(r) for r in result]
-    return lista
+    result = db.query(sql, [m_query, end, beginning])
+    all = [dict(r) for r in result]
+    return all
 
-def hae_avaus_id(id):
+def get_opening_id(id):
     sql = """Select a.id, a.nimi, a.kuvaus, a.tykkaykset, a.tekija, a.tykkaajat_nimi
             FROM avaukset AS a
             Where a.id = ?"""
     result = db.query(sql, [id,])
     return result[0]
 
-def hae_siirrot_avauksesta(id):
+def get_moves_from_opening(id):
     sql = """SELECT m.siirto_numero, m.siirto
             FROM moves AS m
             WHERE m.avaus_id = ?
             ORDER BY m.siirto_numero"""
     result = db.query(sql, [id,])
-    lista = [dict(r) for r in result]
-    palautus = yhdistä_siirrot(lista)
+    moves = [dict(r) for r in result]
+    palautus = connect_moves(moves)
     return palautus
 
-def yhdistä_siirrot(list):
+
+def connect_moves(moves):
     num = 1
-    siirtoNum = 1
-    ekaSiirto = ""
+    moveNum = 1
+    firstMove = ""
     ret = []
-    for siirto in list:
+    for move in moves:
         if num == 1:
-            ekaSiirto = siirto["siirto"]
+            firstMove = move["siirto"]
             num = 2
         else:
-            rivi = dict(siirto_numero = siirtoNum, siirtoW = ekaSiirto, siirtoM = siirto["siirto"])
+            rivi = dict(siirto_numero = moveNum, siirtoW = firstMove, siirtoM = move["siirto"])
             ret.append(rivi)
             num = 1
-            siirtoNum += 2
+            moveNum += 2
     if num == 2:
-        rivi = dict(siirto_numero = siirtoNum, siirtoW = ekaSiirto, siirtoM = "Loss")
+        rivi = dict(siirto_numero = moveNum, siirtoW = firstMove, siirtoM = "Loss")
     return ret
 
 
-def tykkää(m_tykkäykset, m_tykkääjät, id):
+def like(m_likes, m_likers, id):
     sql = """UPDATE avaukset 
             SET tykkaykset = ?, tykkaajat_nimi = ?
             WHERE id = ?
             """
-    db.execute(sql, [m_tykkäykset, m_tykkääjät, id])
+    db.execute(sql, [m_likes, m_likers, id])
 
-
-def hae_kayttajan_avaukset(tunnus):
+def search_user_opening(username):
     sql = """
         SELECT id, nimi, kuvaus, eco_code, tykkaykset
         FROM avaukset
         WHERE tekija = ?
         ORDER BY tykkaykset DESC
     """
-    return db.query(sql, [tunnus])
+    return db.query(sql, [username])
 
-
-def tee_kommentti(tekija, teksti, avaus_id):
-    avaus = hae_avaus_id(avaus_id)
+def create_comment(creator, tekst, opening_id):
+    avaus = get_opening_id(opening_id)
 
     sql = """INSERT INTO kommentit (avaus_id, teksti, tekija, avauksen_nimi) 
             VALUES (?, ?, ?, ?)"""
-    db.execute(sql, [avaus_id, teksti, tekija, avaus[1]])
-
-def hae_kommentit(avaus_id):
+    db.execute(sql, [opening_id, tekst, creator, avaus[1]])
+def query_comments(opening_id):
     sql = """
         SELECT id, tekija, teksti, tykkaykset, tykkaajat_nimi
         FROM kommentit
         WHERE avaus_id = ?
         ORDER BY tykkaykset DESC
     """
-    return db.query(sql, [avaus_id])
+    return db.query(sql, [opening_id])
 
-def tykkää_kommenttia(id, tykkaykset, tykkaajat):
+def like_comment(id, likes, likers):
     sql = """
         UPDATE kommentit SET tykkaykset = ?, tykkaajat_nimi = ?
         WHERE id = ?
     """
-    db.execute(sql, [tykkaykset, tykkaajat, id])
+    db.execute(sql, [likes, likers, id])
 
-
-def hae_kommentti_id(id):
+def query_by_comment_id(id):
     sql = """
         SELECT id, tekija, teksti, tykkaykset, tykkaajat_nimi, avaus_id
         FROM kommentit
@@ -121,14 +118,14 @@ def hae_kommentti_id(id):
     """
     return db.query(sql, [id,])[0]
 
-def hae_kayttajan_kommentit(tunnus):
+def query_users_comments(username):
     sql = """
         SELECT id, avaus_id, teksti, tykkaykset, avauksen_nimi
         FROM kommentit
         WHERE tekija = ?
         ORDER BY tykkaykset DESC
     """
-    return db.query(sql, [tunnus])
+    return db.query(sql, [username])
 
 
 def delete_op(id):
@@ -149,8 +146,8 @@ def leader_board_info():
     all_users_stats={}
     likes = 0
     for u in users:
-        openings = hae_kayttajan_avaukset(u[0])
-        comments = hae_kayttajan_kommentit(u[0])
+        openings = search_user_opening(u[0])
+        comments = query_users_comments(u[0])
         if openings:
             most_liked_opening = openings[0]["nimi"]
             most_liked_opening_id = openings[0]["id"]

@@ -5,7 +5,7 @@
 {% block content %}
 
 <head>
-  <title>Kirjautuminen</title>
+  <title>Log in</title>
 </head>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -21,15 +21,15 @@
   {% if session.username %}
   <h1>All openings</h1>
   <form action="/" method="get">
-    <input type="text" name="haku" value= "{{haku}}" placeholder="Hae nimellä">
-  <select name="jarjestys">
-      <option value="id" {% if jarjestys == "id" %}selected{% endif %}>Uusin</option>
-      <option value="tykkaykset" {% if jarjestys == "tykkaykset" %}selected{% endif %}>Tykkäykset</option>
-      <option value="tekija" {% if jarjestys == "tekija" %}selected{% endif %}>Tekijä</option>
+    <input type="text" name="query" value= "{{query}}" placeholder="search with the name of the opening">
+  <select name="order">
+      <option value="id" {% if order == "id" %}selected{% endif %}>Newest</option>
+      <option value="tykkaykset" {% if order == "tykkaykset" %}selected{% endif %}>Likes</option>
+      <option value="tekija" {% if order == "tekija" %}selected{% endif %}>Creator</option>
   </select>
-    <button type="submit">Hae</button>
+    <button type="submit">Search</button>
     <a href="/" style="margin-left: 10px;">
-    <button type="button">Poista haku</button>
+    <button type="button">Remove search</button>
   </a>
 
   </form>

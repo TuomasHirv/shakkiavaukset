@@ -19,7 +19,7 @@
 
         {% for user in users %}
         <tr>
-            <td><a href="{{ url_for('user_profile', username=user.id) }}">{{ user.name }}</a></td>
+            <td><a href="{{ url_for('user_profile', username=user.name) }}">{{ user.name }}</a></td>
             <td>{{ user.Total_likes }}</td>
             <td>
                 {% if user.opening != "none" %}
