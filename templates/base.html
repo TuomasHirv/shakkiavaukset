@@ -1,26 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}My Chess Openings{% endblock %}</title>
     <style>
-        .home-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-        }
+    .top-buttons {
+        position: fixed;       /* stick to screen */
+        top: 10px;             /* distance from top */
+        right: 10px;           /* distance from right */
+        z-index: 1000;         /* stay above content */
+        display: flex;         /* arrange buttons in a row */
+        gap: 10px;             /* space between buttons */
+        flex-wrap: wrap;       /* wrap if screen is too narrow */
+    }
+
+    .top-buttons button {
+        padding: 5px 10px;
+        font-size: 14px;
+        max-width: 120px;
+        white-space: nowrap;   
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .content {
+    padding-top: 60px; /* adjust this to the height of your top buttons */
+    padding-left: 10px; /* optional: some horizontal padding */
+    padding-right: 10px;
+    }
+
     </style>
 </head>
-<body>
-
-    <form action="{{ url_for('index') }}" method="get" class="home-button">
+<div class="top-buttons">
+    {% if session.username %}
+        <form action="{{ url_for('user_profile', username=session.username) }}" method="get">
+        <button type="submit">{{ session.username }}</button>
+    </form>
+    {% endif %}
+    <form action="{{ url_for('index') }}" method="get">
         <button type="submit">Home</button>
     </form>
+    {% if session.username %}
+    <form action="/new_item" method="get">
+        <button type="submit">New Opening</button>
+    </form>
+    {% endif %}
+    <form action="/leaderboard" method="get">
+        <button type="submit">Leaderboard</button>
+    </form>
+    {% if session.username %}
+        <form action="/logout" method="get">
+            <button type="submit">Log out</button>
+        </form>
+    {% else %}
+        <form action="/" method="get">
+            <button type="submit">Log in</button>
+        </form>
+    {% endif %}
 
-    <div>
-        {% block content %}{% endblock %}
-    </div>
-
-</body>
-</html>
+</div>
+<div class="content">
+    {% block content %}{% endblock %}
+</div>

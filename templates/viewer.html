@@ -1,5 +1,6 @@
+{% extends "base.html" %}
 
-
+{% block content %}
 <h1>{{ avaus["nimi"] }}</h1>
 <p><strong>Tekijä: 
     <a href="{{ url_for('user_profile', username=avaus['tekija']) }}">
@@ -99,4 +100,5 @@
 
 </div>
 {% endfor %}
+{% endblock %}
 

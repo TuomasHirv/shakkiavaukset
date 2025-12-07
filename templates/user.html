@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+
 <h1>{{ username }}</h1>
 
 <p><strong>Tykkäykset:</strong> {{ total_likes }}</p>
@@ -38,3 +41,4 @@
     {% endfor %}
 
 </table>
+{% endblock %}

@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+{% extends "base.html" %}
+{% block content %}
+
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul style="color:red;">
@@ -12,7 +15,9 @@
 <head>
   <title>Uusi avaus</title>
 </head>
+{% if session.username %}
 <body>
+  <h1>New opening</h1>
   <form id="openingForm" action="/create_item" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
@@ -48,3 +53,7 @@
 
 </body>
 </html>
+{% else %}
+  <h1>Log in to make an opening</h1>
+{% endif %}
+{% endblock %}

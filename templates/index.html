@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <html>
+{% extends "base.html" %}
+{% block content %}
 
 <head>
   <title>Kirjautuminen</title>
@@ -17,16 +19,7 @@
 
 <body>
   {% if session.username %}
-  <p>
-    Olet kirjautunut nimellä:
-    <a href="{{ url_for('user_profile', username=session.username) }}">
-      {{ session.username }}
-    </a>
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-    <a href="/new_item">Uusi avaus</a>
-  </p>
+  <h1>All openings</h1>
   <form action="/" method="get">
     <input type="text" name="haku" value= "{{haku}}" placeholder="Hae nimellä">
   <select name="jarjestys">
@@ -68,3 +61,4 @@
 </body>
 
 </html>
+{% endblock %}

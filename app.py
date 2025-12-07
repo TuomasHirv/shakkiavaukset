@@ -20,10 +20,10 @@ csrf = CSRFProtect(app)
 
 @app.route("/")
 def index():
-    haku = request.args.get("haku", "")
-    järjestys = request.args.get("jarjestys", "id")
-    avaukset = siirrot_reader.hae_avauksia(0, 9, järjestys, haku)
-    return render_template("index.html", lista = avaukset, jarjestys = järjestys, haku=haku)
+    search = request.args.get("haku", "")
+    order = request.args.get("jarjestys", "id")
+    avaukset = siirrot_reader.hae_avauksia(0, 9, order, search)
+    return render_template("index.html", lista = avaukset, jarjestys = order, haku=search)
 
 @app.route("/register")
 def register():
@@ -76,23 +76,23 @@ def new_item():
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
-    nimi = request.form["nimi"]
-    tekija = session["username"]
+    name = request.form["nimi"]
+    creator = session["username"]
     eco_code = request.form["eco_code"]
-    kuvaus = request.form["kuvaus"]
-    siirrot = request.form["siirrot"]
+    description = request.form["kuvaus"]
+    moves = request.form["siirrot"]
     
     errors = []
-    nimi_letters = len(re.findall(r"[A-Za-z]", nimi))
-    if nimi_letters < 5 or nimi_letters > 30:
+    name_letters = len(re.findall(r"[A-Za-z]", name))
+    if name_letters < 5 or name_letters > 30:
         errors.append("Name must be between 5 and 30 letters (spaces, numbers, symbols ignored).")
 
-    kuvaus_letters = len(re.findall(r"[A-Za-z]", kuvaus))
-    if kuvaus_letters < 5 or kuvaus_letters > 60:
+    description_letters = len(re.findall(r"[A-Za-z]", description))
+    if description_letters < 5 or description_letters > 60:
         errors.append("Description must be between 5 and 60 letters (spaces, numbers, symbols ignored).")
 
-    siirrot_count = len(re.findall(r"[A-Za-z0-9]", siirrot))
-    if siirrot_count < 6 or siirrot_count > 60:
+    moves_count = len(re.findall(r"[A-Za-z0-9]", moves))
+    if moves_count < 6 or moves_count > 60:
         errors.append("Moves must be between 6 and 60 letters/numbers (spaces and symbols ignored).")
 
     if errors:
@@ -100,23 +100,23 @@ def create_item():
             flash(err)
         return redirect(url_for("new_item"))
 
-    tarkistus = siirrot.split()
-    for move in tarkistus:
+    check = moves.split()
+    for move in check:
         move = move.strip()
         if not SAN_PATTERN.match(move):
             errors.append(f"Invalid chess move: {move}")
     id = -1
     try:
         sql = "INSERT INTO avaukset (nimi, kuvaus, eco_code, tykkaykset, tykkaajat_nimi, tekija) VALUES (?, ?, ?, ?, ?, ?)"
-        db.execute(sql, [nimi, kuvaus, eco_code, 0, "", tekija])
+        db.execute(sql, [name, description, eco_code, 0, "", creator])
         id = db.last_insert_id()
     except sqlite3.IntegrityError:
         return "VIRHE: Jokin Meni pieleen"
     if (id != -1):
         
-        lista = siirrot_reader.teksti_listaksi(siirrot, id)
+        all = siirrot_reader.teksti_listaksi(moves, id)
         sql2 = "INSERT INTO moves (avaus_id, siirto_numero, color, siirto) VALUES (?, ?, ?, ?)"
-        for siirto in lista:
+        for siirto in all:
             db.execute(sql2, [siirto["avaus_id"], siirto["siirto_numero"], siirto["color"], siirto["siirto"]])
         return redirect(url_for("opening_detail", opening_id=id))
     return redirect(url_for("opening_detail", opening_id=id))
