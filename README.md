@@ -18,6 +18,7 @@ Käyttäjä pystyy valitsemaan avaukselle yhden tai useamman luokittelun (esim. 
 
 Käyttäjä pystyy antamaan avaukselle kommentin ja Tykkaykset. Avauksessa näytetään kommentit ja Tykkäykset. Tehty
 Arvosana vaihdettu tykkäykseen. 26.11
+```python
 
 ## Installation
 
@@ -29,8 +30,7 @@ After cloning the repository move into it.
 
 with 
 
-```python3 -m venv venv
-```
+```python3 -m venv venv```
 or 
 
 ```python -m venv venv
