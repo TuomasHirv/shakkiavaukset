@@ -29,7 +29,7 @@ After cloning the repository move into it.
 
 with 
 
-```python3 -m venv venv```
+```python3 -m venv venv
 
 or 
 
