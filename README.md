@@ -19,42 +19,44 @@ Käyttäjä pystyy valitsemaan avaukselle yhden tai useamman luokittelun (esim. 
 Käyttäjä pystyy antamaan avaukselle kommentin ja Tykkaykset. Avauksessa näytetään kommentit ja Tykkäykset. Tehty
 Arvosana vaihdettu tykkäykseen. 26.11
 
-## Installation
+ Installation
 
 
-##After cloning the repository move into it.
+**After cloning the repository move into it.**
 
 
-##Then create python virtual environmen
+**Then create python virtual environmen**
 
-with python3 -m venv venv
-or python -m venv venv
+with 
+```python3 -m venv venv```
+or 
+```python -m venv venv```
 
-##Enter virtual environment (This changes depending on OS)
+** Enter virtual environment (This changes depending on OS)**
 linux 
-source venv/bin/activate
+```source venv/bin/activate```
 powershell
-.\venv\Scripts\Activate.ps1
+```.\venv\Scripts\Activate.ps1```
 cmd
-.\venv\Scripts\activate.bat
+```.\venv\Scripts\activate.bat```
 git bash
-source venv/Scripts/activate
+```source venv/Scripts/activate```
 
-## INSTALL REQUIREMENTS
-pip install flask flask_wtf
+** INSTALL REQUIREMENTS**
+```pip install flask flask_wtf```
 
-## CREATE CONFIG.py
+** CREATE CONFIG.py**
 
-cd myapp
-touch config.py
-## ENTER CONFIG AND CREATE A SECRET_KEY
+```cd myapp```
+```touch config.py```
+** ENTER CONFIG AND CREATE A SECRET_KEY**
 SECRET_KEY = "123120398098HJDH"
 you can change the string
-## CREATE SQL database
-cd ..
-sqlite3 database.db < schema.sql
-## NOW RUN THE CODE IN (venv) with
-flask run
+** CREATE SQL database**
+```cd ..```
+```sqlite3 database.db < schema.sql```
+** NOW RUN THE CODE IN (venv) with**
+```flask run```
 
 
 
