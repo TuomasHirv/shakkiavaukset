@@ -19,20 +19,20 @@ Käyttäjä pystyy valitsemaan avaukselle yhden tai useamman luokittelun (esim. 
 Käyttäjä pystyy antamaan avaukselle kommentin ja Tykkaykset. Avauksessa näytetään kommentit ja Tykkäykset. Tehty
 Arvosana vaihdettu tykkäykseen. 26.11
 
- Installation
+## Installation
 
 
-**After cloning the repository move into it.**
+After cloning the repository move into it.
 
 
-**Then create python virtual environmen**
+1. Then create python virtual environmen
 
 with 
 ```python3 -m venv venv```
 or 
 ```python -m venv venv```
 
-** Enter virtual environment (This changes depending on OS)**
+2. Enter virtual environment (This changes depending on OS)
 linux 
 ```source venv/bin/activate```
 powershell
@@ -42,20 +42,23 @@ cmd
 git bash
 ```source venv/Scripts/activate```
 
-** INSTALL REQUIREMENTS**
+3. INSTALL REQUIREMENTS
 ```pip install flask flask_wtf```
 
-** CREATE CONFIG.py**
+4. CREATE CONFIG.py
 
 ```cd myapp```
 ```touch config.py```
-** ENTER CONFIG AND CREATE A SECRET_KEY**
+
+5. ENTER CONFIG AND CREATE A SECRET_KEY
 SECRET_KEY = "123120398098HJDH"
 you can change the string
-** CREATE SQL database**
+
+6. CREATE SQL database**
 ```cd ..```
 ```sqlite3 database.db < schema.sql```
-** NOW RUN THE CODE IN (venv) with**
+
+7. NOW RUN THE CODE IN (venv) with**
 ```flask run```
 
 
