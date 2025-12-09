@@ -2,6 +2,7 @@ import re
 SAN_PATTERN = re.compile(
     r'^(?:[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?)([+#]?)$'
 )
+from myapp import siirrot_reader
 def validate_username_and_password(username, password, password2):
     errors = []
     username_letters = len(re.findall(r"[A-Za-z]", username))
@@ -13,6 +14,8 @@ def validate_username_and_password(username, password, password2):
         errors.append("Password must have atleast 6 symbols")
     if password != password2:
         errors.append("Passwords dont match")
+    if siirrot_reader.search_for_username(username):
+        errors.append("Username already exists")
     return errors
 
 def validate_new_opening(name, description, moves):
