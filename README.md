@@ -29,8 +29,7 @@ After cloning the repository move into it.
 1. Then create python virtual environmen
 
 with 
-```python
-python3 -m venv venv
+```python3 -m venv venv```
 
 
 2. Enter virtual environment (This changes depending on OS)
