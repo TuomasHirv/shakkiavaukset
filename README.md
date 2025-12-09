@@ -14,7 +14,7 @@ Käyttäjä pystyy etsimään avauksia hakusanalla. Tehty
 
 Käyttäjäsivu näyttää, montako shakkiavausta käyttäjä on lisännyt ja listan käyttäjän lisäämistä avauksia. Tehty
 
-Käyttäjä pystyy valitsemaan avaukselle yhden tai useamman luokittelun (esim. väri, agressiivinen/passiivinen, mainline/sideline).
+Käyttäjä pystyy valitsemaan avaukselle yhden tai useamman luokittelun (esim. väri, agressiivinen/passiivinen).
 
 Käyttäjä pystyy antamaan avaukselle kommentin ja Tykkaykset. Avauksessa näytetään kommentit ja Tykkäykset. Tehty
 Arvosana vaihdettu tykkäykseen. 26.11
@@ -34,6 +34,9 @@ myapp\siirrot_reader.py:14:0: C0301: Line too long (132/100) (line-too-long)
 
 ------------------------------------------------------------------
 Your code has been rated at 9.95/10 (previous run: 9.95/10, +0.00)
+I dont use built-in id and changing it is very difficult so i chose to not change it
+
+The line that is too long is sql code. It is much more readable when the whole SELECT statement is on one line
 
 I dont use the built-in id at all and since its so deep in my application i decided to not change it.
 Too long line is because of sql code. I find that it is much more readable thisway however so i decided to not alter it.
