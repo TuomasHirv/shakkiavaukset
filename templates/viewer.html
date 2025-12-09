@@ -3,8 +3,8 @@
 {% block content %}
 <h1>{{ avaus["nimi"] }}</h1>
 <p><strong>Tekijä: 
-    <a href="{{ url_for('user_profile', username=avaus['tekija']) }}">
-    {{ avaus["tekija"] }}
+    <a href="{{ url_for('user_profile', username=avaus['creator']) }}">
+    {{ avaus["creator"] }}
     </a>
 </strong> </p>
 {% with messages = get_flashed_messages() %}
@@ -17,9 +17,9 @@
   {% endif %}
 {% endwith %}
 
-<p><strong>Description:</strong> {{ avaus["kuvaus"] }}</p>
-<p><strong>Likes:</strong> {{ avaus["tykkaykset"] }}</p>
-{% if session.username == avaus['tekija'] %}
+<p><strong>Description:</strong> {{ avaus["opening_description"] }}</p>
+<p><strong>Likes:</strong> {{ avaus["likes"] }}</p>
+{% if session.username == avaus['creator'] %}
     <a href="{{ url_for('edit_opening', opening_id=avaus['id']) }}">
         <button type="button">Edit Opening</button>
     </a>
@@ -31,18 +31,21 @@
 
 <table border="1" cellpadding="6">
     <tr>
-        <th>Move #</th>
         <th>White</th>
         <th>Black</th>
     </tr>
-
-    {% for move in moves %}
-        <tr>
-            <td>{{ move["siirto_numero"] }}</td>
-            <td>{{ move["siirtoW"] }}</td>
-            <td>{{ move["siirtoM"] }}</td>
-        </tr>
+    <tr>
+    {% for i in range(0, moves|length, 2) %}
+    <tr>
+        <td>{{ moves[i]["move_notation"] }}</td>
+        <td>
+            {% if moves[i+1] is defined %}
+                {{ moves[i+1]["move_notation"] }}
+            {% endif %}
+        </td>
+    </tr>
     {% endfor %}
+    </tr>
 </table>
 <form action="{{ url_for('tykkaa', opening_id=avaus['id']) }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -62,10 +65,10 @@
     <textarea name="sisalto" rows="3" cols="60"></textarea><br>
     <button type="submit">Lähetä</button>
 </form>
-{% if session.username == avaus['tekija'] %}
+{% if session.username == avaus['creator'] %}
 <form action="{{ url_for('delete_opening', opening_id=avaus['id']) }}" method="post" style="margin-top:10px;">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <button type="submit" onclick="return confirm('Haluatko varmasti poistaa tämän avauksen?')">
+    <button type="submit" onclick="return confirm('Are you sure you want to delete this opening?')">
         Poista avaus
     </button>
 </form>
@@ -104,11 +107,11 @@
     <form action="{{ url_for('tykkaa_kommentista', id=k[0]) }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         {% if tykatyt[k[0]] %}
-        <button type="submit">Poista tykkäys</button>
+        <button type="submit">Remove like</button>
         {% else %}
-        <button type="submit">Tykkää</button>
+        <button type="submit">Like</button>
         {% endif %}
-        {{ k[3] }} likes
+        {{ k[3] }} Likes
     </form>
     {% if session.username == k[1] %}
     <form action="{{ url_for('delete_comment', comment_id=k[0]) }}" method="post" style="display:inline;">
@@ -122,8 +125,8 @@
                 <button type="button">Edit</button>
             </a>
         {% endif %}
-        <button type="submit" onclick="return confirm('Haluatko varmasti poistaa tämän kommentin?')">
-            Poista kommentti
+        <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">
+            Delete comment
         </button>
     </form>
     {% endif %}

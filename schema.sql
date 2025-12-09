@@ -1,5 +1,10 @@
 --Käyttäjä tietokanta:
 PRAGMA foreign_keys = ON;
+DROP TABLE comments;
+DROP TABLE moves;
+DROP TABLE openings;
+DROP TABLE users;
+
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
@@ -8,59 +13,35 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 --Shakkiavaus tietokanta
-CREATE TABLE IF NOT EXISTS avaukset (
+CREATE TABLE IF NOT EXISTS openings (
     id INTEGER PRIMARY KEY,
-    nimi TEXT UNIQUE,
-    kuvaus TEXT,
+    title TEXT UNIQUE,
+    opening_description TEXT,
     eco_code Text,
-    tykkaykset INTEGER,
-    tykkaajat_nimi Text,
-    tekija TEXT
+    likes INTEGER,
+    likers_name Text,
+    creator TEXT,
+    color  TEXT,
+    tag  TEXT,
+    FOREIGN KEY (creator) REFERENCES users(username) ON DELETE CASCADE
 );
 --Shakkiavauksien siirrot atomisoidaan toiseen taulukkoon nimeltä siirrot. 
 -- Niitä yhdistää avaukset.id ja siirrot.avausId
 CREATE TABLE IF NOT EXISTS moves (
     id INTEGER PRIMARY KEY,
-    avaus_id INTEGER NOT NULL,
-    siirto_numero INTEGER NOT NULL,
+    opening_id INTEGER NOT NULL,
+    move_number INTEGER NOT NULL,
     color TEXT CHECK (color IN ('white','black')),
-    siirto TEXT NOT NULL,
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
+    move_notation TEXT NOT NULL,
+    FOREIGN KEY (opening_id) REFERENCES openings(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS kommentit (
+CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY,
-    avaus_id INTEGER NOT NULL,
-    teksti TEXT NOT NULL,
-    tekija TEXT NOT NULL,
-    tykkaykset INTEGER DEFAULT 0,
-    tykkaajat_nimi Text DEFAULT "",
-    avauksen_nimi TEXT DEFAULT "",
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
+    opening_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    creator TEXT NOT NULL,
+    likes INTEGER DEFAULT 0,
+    likers_name Text DEFAULT "",
+    opening_name TEXT DEFAULT "",
+    FOREIGN KEY (opening_id) REFERENCES openings(id) ON DELETE CASCADE
 );
-CREATE TABLE moves_new (
-    id INTEGER PRIMARY KEY,
-    avaus_id INTEGER NOT NULL,
-    siirto_numero INTEGER NOT NULL,
-    color TEXT CHECK (color IN ('white','black')),
-    siirto TEXT NOT NULL,
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
-);
-
-INSERT INTO moves_new SELECT * FROM moves;
-
-DROP TABLE moves;
-
-ALTER TABLE moves_new RENAME TO moves;
-
-CREATE TABLE IF NOT EXISTS kommentit_new (
-    id INTEGER PRIMARY KEY,
-    avaus_id INTEGER NOT NULL,
-    teksti TEXT NOT NULL,
-    tekija TEXT NOT NULL,
-    tykkaykset INTEGER DEFAULT 0,
-    tykkaajat_nimi Text DEFAULT "",
-    avauksen_nimi TEXT DEFAULT "",
-    FOREIGN KEY (avaus_id) REFERENCES avaukset(id) ON DELETE CASCADE
-);
-
-DROP TABLE kommentit_new;

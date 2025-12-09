@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+{% set opening = info["opening"] %}
+{% set moves = info["moves"] %}
+{% set opening_id = info["opening_id"] %}
 
-<h2>Edit Opening: {{ opening["nimi"] }}</h2>
+<h2>Edit Opening: {{ opening["title"] }}</h2>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul style="color:red;">
@@ -11,14 +14,14 @@
     </ul>
   {% endif %}
 {% endwith %}
-{% if session.username == opening["tekija"] %}
+{% if session.username == opening["creator"] %}
     <form action="{{ url_for('save_opening_edit', opening_id=opening_id) }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Name:</label>
-        <input type="text" name="nimi" value="{{ opening['nimi'] }}" size="30"><br><br>
+        <input type="text" name="nimi" value="{{ opening['title'] }}" size="30"><br><br>
 
         <label>Description:</label><br>
-        <textarea name="kuvaus" rows="4" cols="60">{{ opening['kuvaus'] }}</textarea><br><br>
+        <textarea name="kuvaus" rows="4" cols="60">{{ opening['opening_description'] }}</textarea><br><br>
 
         <label>ECO Code:</label>
         <input type="text" name="eco_code" value="{{ opening['eco_code'] }}"><br><br>
@@ -26,11 +29,11 @@
         <h3>Moves:</h3>
 
         {% for m in moves %}
-            <label>Move {{ m["siirto_numero"] }} ({{ m["color"] }})</label>
+            <label>Move {{ m["move_number"] }} ({{ m["color"] }})</label>
 
             <input type="hidden" name="move_id_{{ m['id'] }}" value="{{ m['id'] }}">
 
-            <input type="text" name="siirto_{{ m['id'] }}" value="{{ m['siirto'] }}" size="20">
+            <input type="text" name="siirto_{{ m['id'] }}" value="{{ m['move_notation'] }}" size="20">
             <br><br>
         {% endfor %}
 

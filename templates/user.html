@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% set openings, comments, total_likes = info["openings"], info["comments"], info["total_likes"] %}
 
 <h1>{{ username }}</h1>
 
@@ -9,34 +10,34 @@
     <tr>
         <th>Nimi</th>
         <th>ECO</th>
-        <th>Kuvaus</th>
-        <th>Tykkäykset</th>
+        <th>Description</th>
+        <th>Likes</th>
     </tr>
 
-    {% for a in avaukset %}
+    {% for o in openings %}
     <tr>
         <td>
-            <a href="{{ url_for('opening_detail', opening_id=a[0]) }}">{{ a[1] }}</a>
+            <a href="{{ url_for('opening_detail', opening_id=a[0]) }}">{{ o[1] }}</a>
         </td>
-        <td>{{ a[3] }}</td>
-        <td>{{ a[2] }}</td>
-        <td>{{ a[4] }}</td>
+        <td>{{ o[3] }}</td>
+        <td>{{ o[2] }}</td>
+        <td>{{ o[4] }}</td>
     </tr>
     {% endfor %}
 </table>
 
 <table>
     <tr>
-        <th>Teksti</th>
+        <th>Content</th>
         <th>Likes</th>
-        <th>Avaus</th>
+        <th>Opening</th>
     </tr>
 
-    {% for k in kommentit %}
+    {% for c in comments %}
     <tr>
-        <td>{{ k[2] }}</td>
-        <td>{{ k[3] }}</td>
-        <td><a href="{{ url_for('opening_detail', opening_id=k[1]) }}">{{ k[4] }}</a></td>
+        <td>{{ c[2] }}</td>
+        <td>{{ c[3] }}</td>
+        <td><a href="{{ url_for('opening_detail', opening_id=k[1]) }}">{{ c[4] }}</a></td>
     </tr>
     {% endfor %}
 

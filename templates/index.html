@@ -23,9 +23,9 @@
   <form action="/" method="get">
     <input type="text" name="query" value= "{{query}}" placeholder="search with the name of the opening">
   <select name="order">
-      <option value="id" {% if jarjestys == "id" %}selected{% endif %}>Newest</option>
-      <option value="tykkaykset" {% if jarjestys == "tykkaykset" %}selected{% endif %}>Likes</option>
-      <option value="tekija" {% if jarjestys == "tekija" %}selected{% endif %}>Creator</option>
+      <option value="id" {% if order == "id" %}selected{% endif %}>Newest</option>
+      <option value="likes" {% if order == "likes" %}selected{% endif %}>Likes</option>
+      <option value="creator" {% if order == "creator" %}selected{% endif %}>Creator</option>
   </select>
     <button type="submit">Search</button>
     <a href="/" style="margin-left: 10px;">
@@ -35,8 +35,8 @@
   </form>
 
 <ul>
-  {% for avaus in lista %}
-    <li>{{ avaus["nimi"] }} - {{ avaus["kuvaus"] }} - {{ avaus["tykkaykset"] }} - {{avaus["move_1"]}} - {{avaus["move_2"]}}
+  {% for avaus in opening_list %}
+    <li>{{ avaus["title"] }} - {{ avaus["opening_description"] }} - {{ avaus["likes"] }} - {{avaus["move_1"]}} - {{avaus["move_2"]}}
         <a href = "{{ url_for('opening_detail', opening_id=avaus['id']) }}"> VIEWER </a>
     </li>
   {% endfor %}

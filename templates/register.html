@@ -14,28 +14,28 @@
 {% endwith %}
 <head>
   <meta charset="UTF-8">
-  <title>Rekisteröinti</title>
+  <title>Register</title>
 </head>
 <body>
   <form id="registerForm" action="/create" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <p>
-      Tunnus: <br />
+      Username: <br />
       <input type="text" name="username" id="username" required maxlength="30" minlength="5"
       oninvalid="this.setCustomValidity('Must have atleast 5 letters')"
       oninput="this.setCustomValidity('')"/>
     </p>
 
     <p>
-      Salasana: <br />
+      Password: <br />
       <input type="password" name="password1" id="password1" required maxlength="50" minlength="6"
       oninvalid="this.setCustomValidity('Must have atleast 6 letters')"
       oninput="this.setCustomValidity('')"/>
     </p>
 
     <p>
-      Salasana uudestaan: <br />
+      Password again: <br />
       <input type="password" name="password2" id="password2" required maxlength="50" minlength="6"
       oninvalid="this.setCustomValidity('Must have atleast 6 letters')"
       oninput="this.setCustomValidity('')"/>
