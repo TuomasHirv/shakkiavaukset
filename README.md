@@ -43,7 +43,8 @@ source venv/Scripts/activate
 ## INSTALL REQUIREMENTS
 pip install flask flask_wtf
 
-##CREATE CONFIG.pu
+## CREATE CONFIG.py
+
 cd myapp
 touch config.py
 ## ENTER CONFIG AND CREATE A SECRET_KEY
@@ -52,7 +53,7 @@ you can change the string
 ## CREATE SQL database
 cd ..
 sqlite3 database.db < schema.sql
-#NOW RUN THE CODE IN (venv) with
+## NOW RUN THE CODE IN (venv) with
 flask run
 
 
