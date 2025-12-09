@@ -1,5 +1,4 @@
 """This is router for the web-application"""
-import re
 import sqlite3
 
 from flask import Flask, flash
@@ -8,12 +7,8 @@ from werkzeug.security import generate_password_hash
 from flask_wtf.csrf import CSRFProtect
 
 from myapp import db, config, siirrot_reader, text_validation, db_update_insert
-SAN_PATTERN = re.compile(
-    r'^(?:[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?)([+#]?)$'
-)
-
 app = Flask(__name__)
-app.secret_key = config.secret_key
+app.secret_key = config.SECRET_KEY
 
 csrf = CSRFProtect(app)
 
@@ -40,7 +35,7 @@ def create():
     errors = text_validation.validate_username_and_password(username, password1, password2)
     if errors:
         flash("\n".join(errors))
-        return redirect(request.referrer)
+        return redirect(url_for("register"))
 
     password_hash = generate_password_hash(password1)
     try:
@@ -48,9 +43,9 @@ def create():
         db.execute(sql, [username, password_hash])
     except sqlite3.IntegrityError:
         flash("VIRHE: tunnus on jo varattu")
-        return redirect(url_for("create"))
+        return redirect(url_for("register"))
 
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -170,9 +165,10 @@ def kommentti(opening_id):
         errors.append("Add content to the comment")
 
     if errors:
-        for error in errors:
-            flash(error)
-        redirect(request.referrer)
+        for err in errors:
+            flash(err)
+            return redirect(request.referrer)
+
 
     db_update_insert.create_comment(user, text, opening_id)
     return redirect(url_for("opening_detail", opening_id=opening_id))
@@ -214,7 +210,7 @@ def update_comment_route(id):
     text = new_text.strip()
     if not text:
         flash("Add content to the comment")
-        redirect(request.referrer)
+        return redirect(request.referrer)
 
     db_update_insert.update_comment(id, new_text)   # your existing function
     opening_id = request.form["opening_id"]
@@ -295,7 +291,9 @@ def save_opening_edit(opening_id):
     if errors:
         for err in errors:
             flash(err)
-        return redirect(request.referrer or url_for("index"))
+            return redirect(url_for(index))
+
+
     db_update_insert.change_opening_info(title,description,eco_code,opening_id)
     db_update_insert.change_moves(move_updates)
     return redirect(url_for("opening_detail", opening_id=opening_id))

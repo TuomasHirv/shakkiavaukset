@@ -1,7 +1,5 @@
 """Responsible for functions that add or update the database"""
-import db
-import siirrot_reader
-import move_reader
+from myapp import db, siirrot_reader, move_reader
 
 
 def create_comment(creator, text, opening_id):

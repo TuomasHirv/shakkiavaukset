@@ -1,5 +1,5 @@
 """Functions that interact with db"""
-import db
+from myapp import db
 from werkzeug.security import check_password_hash
 
 def get_openings(beginning = 0, end = 9, order = "id", query = ""):
@@ -95,10 +95,10 @@ def opening_edit_helper(opening_id):
 def login_helper(username,password):
     """Checks if the given password is correct"""
     sql = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
-
-    if check_password_hash(password_hash, password):
-        return True
+    password_hash = db.query(sql, [username])
+    if password_hash:
+        if check_password_hash(password_hash[0][0], password):
+            return True
     return False
 
 
