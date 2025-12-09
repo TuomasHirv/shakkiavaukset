@@ -28,26 +28,39 @@ After cloning the repository move into it.
 1. Then create python virtual environmen
 
 with 
+
 ```python3 -m venv venv```
+
 or 
+
 ```python -m venv venv```
 
+
 2. Enter virtual environment (This changes depending on OS)
-linux 
+linux
+
 ```source venv/bin/activate```
+
 powershell
+
 ```.\venv\Scripts\Activate.ps1```
+
 cmd
+
 ```.\venv\Scripts\activate.bat```
+
 git bash
+
 ```source venv/Scripts/activate```
 
-3. INSTALL REQUIREMENTS
+4. INSTALL REQUIREMENTS
+5. 
 ```pip install flask flask_wtf```
 
-4. CREATE CONFIG.py
+6. CREATE CONFIG.py
 
 ```cd myapp```
+
 ```touch config.py```
 
 5. ENTER CONFIG AND CREATE A SECRET_KEY
@@ -55,10 +68,14 @@ SECRET_KEY = "123120398098HJDH"
 you can change the string
 
 6. CREATE SQL database**
+   
 ```cd ..```
+
 ```sqlite3 database.db < schema.sql```
 
-7. NOW RUN THE CODE IN (venv) with**
+9. NOW RUN THE CODE IN (venv) with**
+
+
 ```flask run```
 
 
