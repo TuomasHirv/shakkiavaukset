@@ -124,7 +124,7 @@ per page
 - Openings and comments should have a link to where you can find them.
 9. Search
 - Press on the home button on the top right.
-- There you find the search bar and all other parameters.
+- There you find the search bar and all other parameters. (NOTE you dont require the entire title to search)
 - Try searching with: (All information matching, Different combinations, individually, Lastly a wrong combination)
 - The page should show no openings.
 - Press remove search button
