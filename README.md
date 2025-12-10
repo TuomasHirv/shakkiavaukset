@@ -136,13 +136,13 @@ per page
 - Both comment and opening likes are always counted in total likes.
 # That should be it for testing. There is always more to test but this list checks the most important functionalities that they broadly work.
 
-# If i were to add something to this.
+## If i were to add something to this.
 1. I would probably try to make my app.py file cleaner.
 2. I would like to add a visual representation of the openings but this was more difficult than i thought since i wanst allowed to use css libraries.
 3. It would also be nice if the app checked if the sequence of moves is possible in an actual chess game.
 4. It would be nice to have sidelines branching off of main line openings. say Vienna game -> Vienna game falkbeer.
 
-Pylint report
+## Pylint report
 
 Module app
 app.py:88:8: W0622: Redefining built-in 'id' (redefined-builtin)
