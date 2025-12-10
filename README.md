@@ -145,9 +145,10 @@ per page
 
 ## If i were to add something to this.
 1. I would probably try to make my app.py file cleaner.
-2. I would like to add a visual representation of the openings but this was more difficult than i thought since i wanst allowed to use css libraries.
-3. It would also be nice if the app checked if the sequence of moves is possible in an actual chess game.
-4. It would be nice to have sidelines branching off of main line openings. say Vienna game -> Vienna game falkbeer.
+2. I would also make a more sensible file infrastructure.
+3. I would like to add a visual representation of the openings but this was more difficult than i thought since i wanst allowed to use css libraries.
+4. It would also be nice if the app checked if the sequence of moves is possible in an actual chess game.
+5. It would be nice to have sidelines branching off of main line openings. say Vienna game -> Vienna game falkbeer.
 
 ## Pylint report
 
