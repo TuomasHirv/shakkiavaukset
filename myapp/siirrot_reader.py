@@ -2,25 +2,36 @@
 from myapp import db
 from werkzeug.security import check_password_hash
 
-def get_openings(beginning = 0, end = 9, order = "id", query = ""):
+def get_openings(beginning = 0, end = 9, order = "id", query = "", color = "%", tag = "%"):
     """Queries the openings for the homepage"""
     #Note that i cant use a parameter for ORDER BY.
     #To prevent injections i created a whitelist
     whitelist = ["id", "likes", "creator"]
+    tag_whitelist = ["neutral", "aggressive", "passive", "%"]
+    color_whitelist = ["white", "black", "%"]
     if order not in whitelist:
         order = "id"
     m_order = "a."+order
 
-    sql = f"""SELECT a.id, a.title, a.opening_description, a.likes, a.creator, m.move_notation AS move_1, m2.move_notation AS move_2
+    if color:
+        if color not in color_whitelist:
+            color = "%"
+    if tag:
+        if tag not in tag_whitelist:
+            tag = "%"
+
+    sql = f"""SELECT a.id, a.title, a.opening_description, a.likes, a.creator, a.color, a.tag, m.move_notation AS move_1, m2.move_notation AS move_2
         FROM openings AS a
         JOIN moves as m ON a.id = m.opening_id AND m.move_number = 1
         JOIN moves as m2 ON a.id = m2.opening_id AND m2.move_number = 2
-        WHERE a.title LIKE ?
+        WHERE a.title LIKE ? 
+        AND a.tag LIKE ? 
+        AND a.color LIKE ?
         ORDER BY {m_order} DESC
         LIMIT ? OFFSET ?"""
     m_query = "%"+query+"%"
 
-    result = db.query(sql, [m_query, end, beginning])
+    result = db.query(sql, [m_query, tag, color, end, beginning])
     all_openings = [dict(r) for r in result]
     return all_openings
 
@@ -81,7 +92,7 @@ def query_users_comments(username):
 
 def opening_edit_helper(opening_id):
     """Queries all the information of the opening being edited"""
-    sql = """SELECT title, opening_description, eco_code, creator
+    sql = """SELECT title, opening_description, eco_code, creator, color, tag
             FROM openings 
             WHERE id = ?;"""
     opening_info = db.query(sql, [opening_id])[0]
@@ -114,7 +125,7 @@ def search_for_username(username):
 
 def get_opening_id(opening_id):
     """Gets opening information based on id"""
-    sql = """Select a.id, a.title, a.opening_description, a.likes, a.creator, a.likers_name
+    sql = """Select a.id, a.title, a.opening_description, a.likes, a.creator, a.likers_name, a.color, a.tag
             FROM openings AS a
             Where a.id = ?"""
     result = db.query(sql, [opening_id,])

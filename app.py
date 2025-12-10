@@ -17,8 +17,10 @@ def index():
     """Page shows either log in or the default search page of the application"""
     search = request.args.get("query", "")
     order = request.args.get("order", "id")
-    openings = siirrot_reader.get_openings(0, 9, order, search)
-    return render_template("index.html", opening_list = openings, order = order, query=search)
+    tag = request.args.get("tag", "%")
+    color = request.args.get("color", "%")
+    openings = siirrot_reader.get_openings(0, 20, order, search, color, tag)
+    return render_template("index.html", opening_list = openings, order = order, query=search,)
 
 @app.route("/register")
 def register():
@@ -73,6 +75,8 @@ def create_item():
     eco_code = request.form["eco_code"]
     description = request.form["kuvaus"]
     moves = request.form["siirrot"]
+    tag = request.form["tag"]
+    color = request.form["color"]
     #Checking if the text is valid
     errors = text_validation.validate_new_opening(name,description,moves)
     if errors:
@@ -80,12 +84,12 @@ def create_item():
             flash(err)
         return redirect(request.referrer)
     try:
-        id = db_update_insert.new_item_helper(name, description, eco_code, creator, moves)
+        opening_id = db_update_insert.new_item_helper(name, description, eco_code, creator, moves, color, tag)
     except sqlite3.IntegrityError:
         flash("VIRHE: Jokin Meni pieleen")
         return redirect(request.referrer)
 
-    return redirect(url_for("opening_detail", opening_id=id))
+    return redirect(url_for("opening_detail", opening_id=opening_id))
 
 @app.route("/opening/<int:opening_id>")
 def opening_detail(opening_id):
@@ -280,6 +284,8 @@ def save_opening_edit(opening_id):
     title = request.form["nimi"]
     description = request.form["kuvaus"]
     eco_code = request.form["eco_code"]
+    tag = request.form["tag"]
+    color = request.form["color"]
     move_updates = []
     for key, value in request.form.items():
         if key.startswith("siirto_"):
@@ -294,6 +300,6 @@ def save_opening_edit(opening_id):
             return redirect(url_for(index))
 
 
-    db_update_insert.change_opening_info(title,description,eco_code,opening_id)
+    db_update_insert.change_opening_info(title, description, eco_code, opening_id, color, tag)
     db_update_insert.change_moves(move_updates)
     return redirect(url_for("opening_detail", opening_id=opening_id))

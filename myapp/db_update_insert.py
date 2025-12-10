@@ -29,20 +29,20 @@ def change_moves(move_id_new_text):
         move_id = move[1]
         db.execute(sql, [text, move_id])
 
-def change_opening_info(title, description, ecocode, opening_id):
+def change_opening_info(title, description, ecocode, opening_id, color, tag):
     """Changes the information in the opening"""
     sql = """UPDATE openings
-        SET title = ?, opening_description = ?, eco_code = ?
+        SET title = ?, opening_description = ?, eco_code = ?, color = ?, tag = ?
         WHERE id = ?;"""
-    db.execute(sql, [title, description, ecocode, opening_id])
+    db.execute(sql, [title, description, ecocode, color, tag, opening_id])
 
-def new_item_helper(name, description, eco_code, creator, moves):
+def new_item_helper(name, description, eco_code, creator, moves, color, tag):
     """Creates a new opening"""
     #Creates the opening row
     sql = """INSERT INTO openings
-            (title, opening_description, eco_code, likes, likers_name, creator)
-            VALUES (?, ?, ?, ?, ?, ?)"""
-    db.execute(sql, [name, description, eco_code, 0, "", creator])
+            (title, opening_description, eco_code, likes, likers_name, creator, color, tag)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+    db.execute(sql, [name, description, eco_code, 0, "", creator, color, tag])
     last_id = db.last_insert_id()
     #Adds the moves that are associated with the opening
     all_moves = move_reader.text_to_list(moves, last_id)
@@ -53,7 +53,7 @@ def new_item_helper(name, description, eco_code, creator, moves):
                           move["move_number"],
                           move["color"],
                           move["move_notation"]])
-    return id
+    return last_id
 
 
 #Liking functions

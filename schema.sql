@@ -1,9 +1,10 @@
 --Käyttäjä tietokanta:
 PRAGMA foreign_keys = ON;
-DROP TABLE comments;
-DROP TABLE moves;
-DROP TABLE openings;
-DROP TABLE users;
+
+--DROP TABLE comments;
+--DROP TABLE moves;
+--DROP TABLE openings;
+--DROP TABLE users;
 
 
 CREATE TABLE IF NOT EXISTS users (

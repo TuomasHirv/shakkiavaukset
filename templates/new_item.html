@@ -39,13 +39,51 @@
              oninvalid="this.setCustomValidity('Description must be between 5 and 60 letters')"
              oninput="this.setCustomValidity('')"/>
     </p>
+    <p>
+      Tag: <br>
+      <select name="tag" id="tag" required>
+        <option value="neutral">Neutral</option>
+        <option value="aggressive">Aggressive</option>
+        <option value="passive">Passive</option>
+      </select>
+    </p>
 
     <p>
-      Siirrot: <br />
-      <textarea name="siirrot" id="siirrot" rows="20" cols="6" required maxlength="60"
-                oninvalid="this.setCustomValidity('Enter the moves of the opening. Between 6 and 60 letters')"
-                oninput="this.setCustomValidity('')"></textarea>
+      Color: <br>
+      <select name="color" id="color" required>
+        <option value="white">White</option>
+        <option value="black">Black</option>
+      </select>
     </p>
+
+    <div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div>
+
+      <p>
+        Siirrot: <br />
+        <textarea name="siirrot" id="siirrot" rows="20" cols="6" required maxlength="60"
+                  oninvalid="this.setCustomValidity('Enter the moves of the opening. Between 6 and 60 letters')"
+                  oninput="this.setCustomValidity('')"></textarea>
+      </p>
+    </div>
+
+    <div style="min-width: 180px; font-size: 16px; padding: 8px; border: 2px solid #0b0303;">
+      <strong>Chess notation</strong><br><br>
+      K = King<br>
+      Q = Queen<br>
+      R = Rook<br>
+      B = Bishop<br>
+      N = Knight<br>
+      x denotes capture<br><br>
+      Example:<br>
+      e4 d5<br>
+      Nf3 Nc6<br>
+      exd5 e5<br><br>
+      Castling:<br>
+      O-O (kingside)<br>
+      O-O-O (queenside)
+    </div>
+
 
     <input type="submit" value="Luo avaus" />
   </form>

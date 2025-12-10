@@ -25,6 +25,17 @@
 
         <label>ECO Code:</label>
         <input type="text" name="eco_code" value="{{ opening['eco_code'] }}"><br><br>
+        <label>Tag:</label>
+        <select name="tag" id="tag" required>
+          <option value="neutral" {% if opening.tag == "neutral" %}selected{% endif %}>Neutral</option>
+          <option value="aggressive" {% if opening.tag == "aggressive" %}selected{% endif %}>Aggressive</option>
+          <option value="passive" {% if opening.tag == "passive" %}selected{% endif %}>Passive</option>
+        </select>
+        <label>Color:</label>
+        <select name="color" id="color" required>
+          <option value="white" {% if opening.color == "white" %}selected{% endif %}>White</option>
+          <option value="black" {% if opening.color == "black" %}selected{% endif %}>Black</option>
+        </select>
 
         <h3>Moves:</h3>
 
