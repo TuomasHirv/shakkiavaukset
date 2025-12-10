@@ -122,13 +122,20 @@ per page
 - Press the button on top right that has your chosen username
 - User page Should show (name, likes, list of openings with some information, list of comments with some information)
 - Openings and comments should have a link to where you can find them.
-9. Deleting an opening
+9. Search
+- Press on the home button on the top right.
+- There you find the search bar and all other parameters.
+- Try searching with: (All information matching, Different combinations, individually, Lastly a wrong combination)
+- The page should show no openings.
+- Press remove search button
+- You should see your opening again.
+10. Deleting an opening
 - Press on the link to your opening.
 - Press Delete opening
 - You should get a confimation request press ok
 - This should delete the opening and all associated comments and moves with the SQL CASCADE functionality.
 - You should be redirected to index page with a message
-10.Leaderboard
+11.Leaderboard
 - Press the leaderboard button on the top right.
 - Leaderboard page should have a list of all users ordered by like count.
 - Information is (user link to user, total likes, most liked opening with link, most liked comment with link)
