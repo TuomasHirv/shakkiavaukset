@@ -6,7 +6,8 @@
 
 <p><strong>Tykkäykset:</strong> {{ total_likes }}</p>
 
-<table>
+<table border="1" cellpadding="6">
+    <br><label>Openings</label><br>
     <tr>
         <th>Nimi</th>
         <th>ECO</th>
@@ -17,7 +18,7 @@
     {% for o in openings %}
     <tr>
         <td>
-            <a href="{{ url_for('opening_detail', opening_id=a[0]) }}">{{ o[1] }}</a>
+            <a href="{{ url_for('opening_detail', opening_id=o[0]) }}">{{ o[1] }}</a>
         </td>
         <td>{{ o[3] }}</td>
         <td>{{ o[2] }}</td>
@@ -26,7 +27,8 @@
     {% endfor %}
 </table>
 
-<table>
+<table border="1" cellpadding="6">
+    <br><label>Comments</label><br>
     <tr>
         <th>Content</th>
         <th>Likes</th>
@@ -37,7 +39,7 @@
     <tr>
         <td>{{ c[2] }}</td>
         <td>{{ c[3] }}</td>
-        <td><a href="{{ url_for('opening_detail', opening_id=k[1]) }}">{{ c[4] }}</a></td>
+        <td><a href="{{ url_for('opening_detail', opening_id=c[1]) }}">{{ c[4] }}</a></td>
     </tr>
     {% endfor %}
 

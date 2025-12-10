@@ -297,7 +297,7 @@ def save_opening_edit(opening_id):
     if errors:
         for err in errors:
             flash(err)
-            return redirect(url_for(index))
+            return redirect(request.referrer)
 
 
     db_update_insert.change_opening_info(title, description, eco_code, opening_id, color, tag)

@@ -44,7 +44,7 @@
 
             <input type="hidden" name="move_id_{{ m['id'] }}" value="{{ m['id'] }}">
 
-            <input type="text" name="siirto_{{ m['id'] }}" value="{{ m['move_notation'] }}" size="20">
+            <input type="text" name="siirto_{{ m['id'] }}" value="{{ m['move_notation'] }}" size="20" minLength="1">
             <br><br>
         {% endfor %}
 

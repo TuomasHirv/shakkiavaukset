@@ -22,7 +22,7 @@
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <p>
-      Nimi: <br />
+      Title: <br />
       <input type="text" name="nimi" id="nimi" required maxlength="30"
              oninvalid="this.setCustomValidity('Name must be between 5 and 30 letters')"
              oninput="this.setCustomValidity('')"/>
@@ -34,7 +34,7 @@
     </p>
 
     <p>
-      Kuvaus: <br />
+      Description: <br />
       <input type="text" name="kuvaus" id="kuvaus" required maxlength="60"
              oninvalid="this.setCustomValidity('Description must be between 5 and 60 letters')"
              oninput="this.setCustomValidity('')"/>
@@ -60,7 +60,7 @@
     <div>
 
       <p>
-        Siirrot: <br />
+        Moves: <br />
         <textarea name="siirrot" id="siirrot" rows="20" cols="6" required maxlength="60"
                   oninvalid="this.setCustomValidity('Enter the moves of the opening. Between 6 and 60 letters')"
                   oninput="this.setCustomValidity('')"></textarea>
@@ -85,7 +85,7 @@
     </div>
 
 
-    <input type="submit" value="Luo avaus" />
+    <input type="submit" value="Submit" />
   </form>
 
 
