@@ -1,6 +1,6 @@
 """Validates text input from user"""
 import re
-from myapp import siirrot_reader
+from myapp import db_main
 
 SAN_PATTERN = re.compile(
     r'^(?:[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?)([+#]?)$'
@@ -22,7 +22,7 @@ def validate_username_and_password(username, password, password2):
         errors.append("Password must have atleast 6 symbols")
     if password != password2:
         errors.append("Passwords dont match")
-    if siirrot_reader.search_for_username(username):
+    if db_main.search_for_username(username):
         errors.append("Username already exists")
     return errors
 

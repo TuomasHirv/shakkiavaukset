@@ -1,10 +1,10 @@
 """Responsible for functions that add or update the database"""
-from myapp import db, siirrot_reader, move_reader
+from myapp import db, db_main, move_reader
 
 
 def create_comment(creator, text, opening_id):
     """Inserts a new comment in to the database"""
-    opening = siirrot_reader.get_opening_id(opening_id)
+    opening = db_main.get_opening_id(opening_id)
 
     sql = """INSERT INTO comments (opening_id, content, creator, opening_name)
             VALUES (?, ?, ?, ?)"""

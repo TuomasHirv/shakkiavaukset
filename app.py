@@ -6,7 +6,7 @@ from flask import render_template, request, session, redirect, url_for
 from werkzeug.security import generate_password_hash
 from flask_wtf.csrf import CSRFProtect
 
-from myapp import db, config, siirrot_reader, text_validation, db_update_insert
+from myapp import db, config, db_main, text_validation, db_update_insert
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
@@ -19,7 +19,7 @@ def index():
     order = request.args.get("order", "id")
     tag = request.args.get("tag", "%")
     color = request.args.get("color", "%")
-    openings = siirrot_reader.get_openings(order, search, color, tag)
+    openings = db_main.get_openings(order, search, color, tag)
     return render_template("index.html", opening_list = openings, order = order, query = search, color = color, tag = tag)
 
 @app.route("/register")
@@ -56,7 +56,7 @@ def login():
     password = request.form["password"]
 
 
-    if siirrot_reader.login_helper(username, password):
+    if db_main.login_helper(username, password):
         session["username"] = username
         return redirect("/")
     flash("VIRHE: väärä tunnus tai salasana")
@@ -94,16 +94,16 @@ def create_item():
 @app.route("/opening/<int:opening_id>")
 def opening_detail(opening_id):
     """Shows the opening the comments and blends it with user info"""
-    opening = siirrot_reader.get_opening_id(opening_id)
+    opening = db_main.get_opening_id(opening_id)
     user = session.get("username")
     liked = False
     if user in opening["likers_name"]:
         liked = True
 
     #print(avaus)
-    moves = siirrot_reader.get_moves_from_opening(opening_id)
+    moves = db_main.get_moves_from_opening(opening_id)
     #print(moves)
-    comments = siirrot_reader.query_comments(opening_id)
+    comments = db_main.query_comments(opening_id)
     liked_comments = {}
     for comment in comments:
         likers = comment[4].split()
@@ -125,7 +125,7 @@ def opening_detail(opening_id):
 def tykkaa(opening_id):
     """Handles liking an opening"""
     user = session.get("username")
-    target = siirrot_reader.get_opening_id(opening_id)
+    target = db_main.get_opening_id(opening_id)
 
     text=target["likers_name"]
     likers = text.split()
@@ -148,8 +148,8 @@ def logout():
 @app.route("/user/<username>")
 def user_profile(username):
     """Shows user information"""
-    openings = siirrot_reader.search_user_opening(username)
-    comments = siirrot_reader.query_users_comments(username)
+    openings = db_main.search_user_opening(username)
+    comments = db_main.query_users_comments(username)
     total = sum(k[3] for k in comments) + sum(a[4] for a in openings)
 
     info = {"openings":openings,"total_likes":total,"comments":comments}
@@ -182,7 +182,7 @@ def kommentti(opening_id):
 def tykkaa_kommentista(id):
     """Handles liking a comment"""
     user = session.get("username")
-    target = siirrot_reader.query_by_comment_id(id)
+    target = db_main.query_by_comment_id(id)
     print(target)
     likers=target["likers_name"]
     list_likers = likers.split()
@@ -200,7 +200,7 @@ def tykkaa_kommentista(id):
 @app.route("/comment/<int:id>/update", methods=["POST"])
 def update_comment_route(id):
     """This handles updating comments"""
-    comment = siirrot_reader.query_by_comment_id(id)
+    comment = db_main.query_by_comment_id(id)
     if not comment:
         flash("Comment not found")
         return redirect(url_for("index"))
@@ -223,7 +223,7 @@ def update_comment_route(id):
 @app.route("/delete_opening/<int:opening_id>", methods=["POST"])
 def delete_opening(opening_id):
     """Handles deleting openings"""
-    opening = siirrot_reader.get_opening_id(opening_id)
+    opening = db_main.get_opening_id(opening_id)
     if not opening:
         flash("Opening not found.")
         return redirect(url_for("index"))
@@ -242,7 +242,7 @@ def delete_opening(opening_id):
 @app.route("/delete_comment/<int:comment_id>", methods=["POST"])
 def delete_comment(comment_id):
     """Handles deleting comments"""
-    comment = siirrot_reader.query_by_comment_id(comment_id)
+    comment = db_main.query_by_comment_id(comment_id)
 
     if not comment:
         flash("Comment not found")
@@ -258,7 +258,7 @@ def delete_comment(comment_id):
 @app.route("/leaderboard")
 def leaderboard():
     """Shows leaderboard information"""
-    users_stats = siirrot_reader.leader_board_info()
+    users_stats = db_main.leader_board_info()
 
     # Sort users by Total_likes descending
     sorted_users = sorted(users_stats.values(), key=lambda x: x["Total_likes"], reverse=True)
@@ -268,14 +268,14 @@ def leaderboard():
 @app.route("/edit_opening/<int:opening_id>")
 def edit_opening(opening_id):
     """Page that allows users to edit openings"""
-    info = siirrot_reader.opening_edit_helper(opening_id)
+    info = db_main.opening_edit_helper(opening_id)
     info = {"opening": info[0],"moves": info[1], "opening_id":opening_id}
     return render_template("edit_opening.html", info=info)
 
 @app.route("/edit_opening/<int:opening_id>", methods=["POST"])
 def save_opening_edit(opening_id):
     """Handles editing openings"""
-    opening = siirrot_reader.get_opening_id(opening_id)
+    opening = db_main.get_opening_id(opening_id)
     user = session.get("username")
     if opening[4] != user:
         flash("You arent allowed to change that opening")
