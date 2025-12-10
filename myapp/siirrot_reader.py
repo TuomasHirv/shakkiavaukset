@@ -2,7 +2,7 @@
 from myapp import db
 from werkzeug.security import check_password_hash
 
-def get_openings(beginning = 0, end = 9, order = "id", query = "", color = "%", tag = "%"):
+def get_openings(order = "id", query = "", color = "%", tag = "%"):
     """Queries the openings for the homepage"""
     #Note that i cant use a parameter for ORDER BY.
     #To prevent injections i created a whitelist
@@ -27,11 +27,10 @@ def get_openings(beginning = 0, end = 9, order = "id", query = "", color = "%", 
         WHERE a.title LIKE ? 
         AND a.tag LIKE ? 
         AND a.color LIKE ?
-        ORDER BY {m_order} DESC
-        LIMIT ? OFFSET ?"""
+        ORDER BY {m_order} DESC"""
     m_query = "%"+query+"%"
 
-    result = db.query(sql, [m_query, tag, color, end, beginning])
+    result = db.query(sql, [m_query, tag, color])
     all_openings = [dict(r) for r in result]
     return all_openings
 

@@ -29,15 +29,15 @@
   </select>
   <select name="tag">
       <option value="%">Any tag</option>
-      <option value="neutral">Neutral</option>
-      <option value="aggressive">Aggressive</option>
-      <option value="passive">Passive</option>
+      <option value="neutral"{% if tag == "neutral" %}selected{% endif %}>Neutral</option>
+      <option value="aggressive"{% if tag == "aggressive" %}selected{% endif %}>Aggressive</option>
+      <option value="passive"{% if tag == "passive" %}selected{% endif %}>Passive</option>
   </select>
 
   <select name="color">
     <option value="%">Any color</option>
-    <option value="white">White</option>
-    <option value="black">Black</option>
+    <option value="white"{% if color == "white" %}selected{% endif %}>White</option>
+    <option value="black"{% if color == "black" %}selected{% endif %}>Black</option>
   </select>
 
     <button type="submit">Search</button>

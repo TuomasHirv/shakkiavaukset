@@ -19,8 +19,8 @@ def index():
     order = request.args.get("order", "id")
     tag = request.args.get("tag", "%")
     color = request.args.get("color", "%")
-    openings = siirrot_reader.get_openings(0, 20, order, search, color, tag)
-    return render_template("index.html", opening_list = openings, order = order, query=search,)
+    openings = siirrot_reader.get_openings(order, search, color, tag)
+    return render_template("index.html", opening_list = openings, order = order, query = search, color = color, tag = tag)
 
 @app.route("/register")
 def register():
